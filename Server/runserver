@@ -1,0 +1,3 @@
+javac EchoServer.java
+rmiregister &
+java -Djava.security.policy=policy.txt EchoServer &
