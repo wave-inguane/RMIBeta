@@ -38,7 +38,6 @@ public class EchoClient {
 
 		// Get a remote reference to the EchoImpl class
 		String strName = "rmi://localhost/EchoService";
-//      String strName = "rmi://localhost:2934/EchoService";
 		System.out.println("Client: Looking up " + strName + "...");
 		Echo RemEcho = null;
 
@@ -65,32 +64,21 @@ public class EchoClient {
 
 			Scanner conIn = new Scanner(System.in);
 			String choice = null;
-			String skip;//skip end of line after reading an integer
-			boolean keepGoing; //flag for "choose operation" loop
-			int operation = 0; //indicates users choice of operation
-			//String userName = userName2;
-
-			//System.out.println("Calendar exist ? : "+ calendar);
-
-			//System.out.println("Server: work() invoked ");
-			//System.out.println("Client: " + userName );
-			//userName = conIn.nextLine();
-
-			//flag = RemEcho.createCalendar(userName);
-
-			keepGoing = true;
+			String skip;						// skip end of line after reading an integer
+			boolean keepGoing = true; 					// flag for "choose operation" loop
+			int operation = 0; 					// indicates users choice of operation
+			
 			while (keepGoing) {
-
 				System.out.println("\nChoose a Task: ");
-				System.out.println("1: create calendar");
-				System.out.println("2: view calendar ");
-				System.out.println("3: post event ");
-				System.out.println("4: modify event ");
-				System.out.println("5: delete event ");
-				System.out.println("6: view calendars");
-				System.out.println("7: post in calendar number");
-				System.out.println("8: view any calendar");
-				System.out.println("9: create another calendar ");
+				System.out.println("1:  create calendar");
+				System.out.println("2:  view calendar ");
+				System.out.println("3:  post event ");
+				System.out.println("4:  modify event ");
+				System.out.println("5:  delete event ");
+				System.out.println("6:  view calendars");
+				System.out.println("7:  post in calendar number");
+				System.out.println("8:  view any calendar");
+				System.out.println("9:  create another calendar ");
 				System.out.println("10: exit ");
 
 				if (conIn.hasNextInt())
