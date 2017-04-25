@@ -42,19 +42,15 @@ public class EchoClient {
 		Echo RemEcho = null;
 
 		try {
-
 			RemEcho = (Echo) Naming.lookup(strName);
 		} catch (Exception e) {
-
 			System.out.println("Client: Exception thrown looking up " + strName);
 			System.exit(1);
 		}
 
 		// Send a messge to the remote object
 
-
 		try {
-
 			RemEcho.setUserName(userName);
 			String userNameUpperCase = RemEcho.EchoMessage();
 
@@ -93,15 +89,13 @@ public class EchoClient {
 
 				skip = conIn.nextLine();
 				switch (operation) {
-
 					case 1:
 						flag = RemEcho.calendarExist(userName);
-						if (flag != true) {
-							RemEcho.createCalendar(userName);
+						if (flag == false) {
 							flag = true;
-							System.out.println(".................... ");
-							System.out.println("New calendar created ");
-							System.out.println(".................... ");
+							System.out.println(".......................................... ");
+							System.out.println("New calendar created for " + userName);
+							System.out.println(".......................................... ");
 						} else {
 							System.out.println("This " + userName + " username already have a calendar. ");
 						}
@@ -109,11 +103,12 @@ public class EchoClient {
 
 					case 2:
 						flag = RemEcho.calendarExist(userName);
-						if (flag != true) {
+						if (flag == false) {
 							System.out.println("Please create a calendar first \n"
 									+ "or select view calendars to select from existing calendars");
 						} else {
-							RemEcho.viewCalendar(userName);
+							String result = RemEcho.viewCalendar(userName);
+							System.out.println(result);
 						}
 						break;
 
@@ -212,7 +207,7 @@ public class EchoClient {
 						break;
 
 					case 6:
-						RemEcho.viewAllCalendars();
+						System.out.println(RemEcho.viewAllCalendars());
 						break;
 
 					case 8:

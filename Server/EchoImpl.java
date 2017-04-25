@@ -17,23 +17,26 @@ import java.util.TreeMap;
 
 public class EchoImpl extends UnicastRemoteObject implements Echo {
 
-    private  Map<String, List<String>> calendar;
-	private  Map<Integer, Map<String,List<String>>>
-	calendars = new TreeMap<Integer, Map<String,List<String>>>();
-	private  List<Map<String, List<String>>> allcalendars = new ArrayList<>();
-	private  String userName;
-	private  List<String> tuple;
-	private  int index = 0;
-	private  int indexKey;
+	private Map<String, List<String>> calendar;
+	private Map<Integer, Map<String, List<String>>>
+			calendars = new TreeMap<Integer, Map<String, List<String>>>();
+	private List<Map<String, List<String>>> allcalendars = new ArrayList<>();
+	private String userName;
+	private List<String> tuple;
+	private int index = 0;
+	private int indexKey;
 	private int allCalendarsIndex = 0;
-	private  List<String> users = new ArrayList<String>();
-	private  Map<String,String> calendarExist = new LinkedHashMap<String,String>();
-	private  int prevIndex[] = new int[1];
+	private List<String> users = new ArrayList<String>();
+	private Map<String, String> calendarExist = new LinkedHashMap<String, String>();
+	private int prevIndex[] = new int[1];
 
 
-    public EchoImpl() throws RemoteException { };
+	public EchoImpl() throws RemoteException {
+	}
 
-    public EchoImpl(String userName) throws RemoteException {
+	;
+
+	public EchoImpl(String userName) throws RemoteException {
 		indexKey = 0;
 		this.userName = userName;
 		users.add(userName);
@@ -42,36 +45,45 @@ public class EchoImpl extends UnicastRemoteObject implements Echo {
 		allcalendars.add(this.calendar);
 		calendars.put(index, this.calendar);
 		prevIndex[0] = index;
-		index ++;
+		index++;
 	}
 
-    public void setUserName(String name) throws RemoteException {
+	public String getUserName() throws RemoteException {
+		return userName;
+	}
+
+	public void setUserName(String name) throws RemoteException {
 		userName = name;
 	}
 
-	 public String getUserName() throws RemoteException {
-		 return userName;
-	 }
-
-	 public boolean calendarExist(String userName) throws RemoteException {
+	public boolean calendarExist(String userName) throws RemoteException {
 		String exist = calendarExist.get(userName);
-		if(exist!=null)
+		if (exist != null)
 			return true;
 		return false;
-	 }
-
+	}
 
 	public boolean createCalendar(String userName) throws RemoteException {
-		if(calendarExist(userName) == false){
-			new EchoImpl(userName);
+		if (calendarExist(userName) == false) {
+			// new EchoImpl(userName);
+			indexKey = 0;
+			this.userName = userName;
+			users.add(userName);
+			calendarExist.put(userName, "exist");
+			calendar = new TreeMap<>();
+			allcalendars.add(this.calendar);
+			calendars.put(index, this.calendar);
+			prevIndex[0] = index;
+			index++;
+
 			return true;
 		}
 		return false;
 	}
 
 	public boolean addEvent(String timeInterval,
-		                        String eventDescription,
-		                        String accessControl) throws RemoteException {
+	                        String eventDescription,
+	                        String accessControl) throws RemoteException {
 		int j = 0;
 		tuple = new ArrayList<>();
 		tuple.add(0, timeInterval);
@@ -79,57 +91,60 @@ public class EchoImpl extends UnicastRemoteObject implements Echo {
 		tuple.add(2, accessControl);
 
 		try {
-			List<String> list = calendar.get(userName+j);
-			while(list!=null){
-				list = calendar.get(userName+j);
+			List<String> list = calendar.get(userName + j);
+			while (list != null) {
+				list = calendar.get(userName + j);
 				j++;
 			}
 
-			calendar.put(userName+indexKey, tuple);
+			calendar.put(userName + indexKey, tuple);
 			indexKey++;
-		} catch(ClassCastException e) {
+		} catch (ClassCastException e) {
 			e.printStackTrace();
 			return false;
 		}
 		return true;
 	}
 
-	public void viewCalendar(String userName)throws RemoteException {
+	public String viewCalendar(String userName) throws RemoteException {
+		StringBuilder sb = new StringBuilder();
 		int tuple = 0;
-		System.out.println("\t\t\t "+userName+ "'s  CALENDAR");
-		System.out.println("...............................................");
-		System.out.println("EVENT# \t\t TIME \t\t EVENT \t\t ACCESS");
-		System.out.println("...............................................");
-		if(calendar != null)
-			for(Iterator<Map.Entry<String, List<String>>> iterator = calendar.entrySet().iterator();iterator.hasNext();) {
+		sb.append("\t\t\t " + userName + "'s  CALENDAR");
+		sb.append("...............................................");
+		sb.append("EVENT# \t\t TIME \t\t EVENT \t\t ACCESS");
+		sb.append("...............................................");
+		if (calendar != null) {
+			for (Iterator<Map.Entry<String, List<String>>> iterator = calendar.entrySet().iterator(); iterator.hasNext(); ) {
 				Entry<String, List<String>> entry = iterator.next();
 				String key = entry.getKey();
 
-				if(key.equalsIgnoreCase(userName+tuple)) {
+				if (key.equalsIgnoreCase(userName + tuple)) {
 					List<String> event = entry.getValue();
-					System.out.println(tuple+": "+event.get(0) +"\t\t"+ event.get(1) +"\t\t"+ event.get(2));
+					sb.append(tuple + ": " + event.get(0) + "\t\t" + event.get(1) + "\t\t" + event.get(2));
 				}
 				tuple++;
 			}
+		}
+		return sb.toString();
 	}
 
-	public List<String> deleteEvent(int eventNumber)throws RemoteException {
-		return  modifyEvent(eventNumber);
+	public List<String> deleteEvent(int eventNumber) throws RemoteException {
+		return modifyEvent(eventNumber);
 	}
 
 
-	public List<String>  modifyEvent(int eventNumber)throws RemoteException {
+	public List<String> modifyEvent(int eventNumber) throws RemoteException {
 		List<String> event = null;
 
 		//String name =
 
-		if(calendars != null)
-			for(Iterator< Map.Entry< Integer, Map<String,List<String>> > > iterator = calendars.entrySet().iterator();iterator.hasNext();) {
-				Entry<Integer, Map<String,List<String>> > entry = iterator.next();
+		if (calendars != null)
+			for (Iterator<Map.Entry<Integer, Map<String, List<String>>>> iterator = calendars.entrySet().iterator(); iterator.hasNext(); ) {
+				Entry<Integer, Map<String, List<String>>> entry = iterator.next();
 
-				Map<String,List<String>> map = entry.getValue();
+				Map<String, List<String>> map = entry.getValue();
 
-				if(map != null) {
+				if (map != null) {
 					for (Iterator<Map.Entry<String, List<String>>> iterator2 = map.entrySet().iterator(); iterator2.hasNext(); ) {
 						Entry<String, List<String>> entry2 = iterator2.next();
 						String key2 = entry2.getKey();
@@ -147,47 +162,55 @@ public class EchoImpl extends UnicastRemoteObject implements Echo {
 		return event;
 	}
 
-	public  EchoImpl createAnotherCalendar(String userName)throws RemoteException {
-		int  j = 0;
+	public EchoImpl createAnotherCalendar(String userName) throws RemoteException {
+		int j = 0;
 		Map<String, List<String>> map = calendars.get(j);
-		while(map != null){
+		while (map != null) {
 			map = calendars.get(j);
 			j++;
 		}
-		index  = prevIndex[0] + 1;
+		index = prevIndex[0] + 1;
 
-		return new EchoImpl (userName);
+		return new EchoImpl(userName);
 	}
 
 
 	public boolean isOwner(String userName, int calendarNumber) throws RemoteException {
 		String name = users.get(calendarNumber);
-		if(name.equalsIgnoreCase(userName))
+		if (name.equalsIgnoreCase(userName))
 			return true;
 		return false;
 	}
 
 
-	public  void viewAllCalendars()throws RemoteException {
+	public String viewAllCalendars() throws RemoteException {
+		StringBuilder sb = new StringBuilder();
 		int i;
-		if(allcalendars!=null)
-			for(i = 0; i < allcalendars.size(); i++)
-				viewAllCalendarsHelper(allcalendars.get(i));
+		if (allcalendars != null) {
+			for (i = 0; i < allcalendars.size(); i++) {
+				sb.append(viewAllCalendarsHelper(allcalendars.get(i)));
+			}
+		}
+		return sb.toString();
 	}
 
 
-	public void viewAllCalendarsHelper(Map<String,List<String>> map)throws RemoteException {
-
+	public String viewAllCalendarsHelper(Map<String, List<String>> map) throws RemoteException {
+		StringBuilder sb = new StringBuilder();
 		int tuple = 0;
-		String name = users.get(allCalendarsIndex = allCalendarsIndex%users.size());
-		if(!name.equalsIgnoreCase(null)) {
-			System.out.println("[ " + allCalendarsIndex + " ] \t\t " + name + "'s  CALENDAR");
+		String name = users.get(allCalendarsIndex = allCalendarsIndex % users.size());
+		if (!name.equalsIgnoreCase(null)) {
+			// System.out.println("[ " + allCalendarsIndex + " ] \t\t " + name + "'s  CALENDAR");
+			sb.append("[ " + allCalendarsIndex + " ] \t\t " + name + "'s  CALENDAR");
 		}
 
-		System.out.println("...............................................");
-		System.out.println("EVENT# \t\t TIME \t\t EVENT \t\t ACCESS");
-		System.out.println("...............................................");
-		if(map != null) {
+		// System.out.println("...............................................");
+		// System.out.println("EVENT# \t\t TIME \t\t EVENT \t\t ACCESS");
+		// System.out.println("...............................................");
+		sb.append("...............................................");
+		sb.append("EVENT# \t\t TIME \t\t EVENT \t\t ACCESS");
+		sb.append("...............................................");
+		if (map != null) {
 			for (Iterator<Map.Entry<String, List<String>>> iterator = map.entrySet().iterator(); iterator.hasNext(); ) {
 				Entry<String, List<String>> entry = iterator.next();
 				String key = entry.getKey();
@@ -195,60 +218,72 @@ public class EchoImpl extends UnicastRemoteObject implements Echo {
 				if (key.equalsIgnoreCase(name + tuple)) {
 					List<String> event = entry.getValue();
 					if (isOwner(userName, allCalendarsIndex) == true)
-						System.out.println(tuple + ": " + event.get(0) + "\t\t" + event.get(1) + "\t\t" + event.get(2));
+						sb.append(tuple + ": " + event.get(0) + "\t\t" + event.get(1) + "\t\t" + event.get(2));
+						// System.out.println(tuple + ": " + event.get(0) + "\t\t" + event.get(1) + "\t\t" + event.get(2));
 					else if (!event.get(2).equalsIgnoreCase("Private"))
-						System.out.println(tuple + ": " + event.get(0) + "\t\t" + event.get(1) + "\t\t" + event.get(2));
+						sb.append(tuple + ": " + event.get(0) + "\t\t" + event.get(1) + "\t\t" + event.get(2));
+						// System.out.println(tuple + ": " + event.get(0) + "\t\t" + event.get(1) + "\t\t" + event.get(2));
 				}
 				tuple++;
 			}
 		}
-		System.out.println("-------------------------------------------------");
-		System.out.println("-------------------------------------------------\n");
+		sb.append("-------------------------------------------------");
+		sb.append("-------------------------------------------------\n");
+		// System.out.println("-------------------------------------------------");
+		// System.out.println("-------------------------------------------------\n");
 		allCalendarsIndex++;
+		return sb.toString();
 	}
 
-	public void viewAnyCalendar(String userName, int index)throws RemoteException {
+	public String viewAnyCalendar(String userName, int index) throws RemoteException {
+		StringBuilder sb = new StringBuilder();
 		int tuple = 0;
 		String name = userName;
-		if(!name.equalsIgnoreCase(null)) {
-			System.out.println("\t\t\t " + users.get(index = index % users.size()) + "'s  CALENDAR");
+		if (!name.equalsIgnoreCase(null)) {
+			sb.append("\t\t\t " + users.get(index = index % users.size()) + "'s  CALENDAR");
+			// System.out.println("\t\t\t " + users.get(index = index % users.size()) + "'s  CALENDAR");
 		}
 
-		System.out.println("...............................................");
-		System.out.println("EVENT \t\t TIME \t\t EVENT \t\t ACCESS");
-		System.out.println("...............................................");
-		if(allcalendars != null) {
+		sb.append("...............................................");
+		sb.append("EVENT# \t\t TIME \t\t EVENT \t\t ACCESS");
+		sb.append("...............................................");
+		if (allcalendars != null) {
 			for (Iterator<Map.Entry<String, List<String>>> iterator =
 			     allcalendars.get(index = index % users.size()).entrySet().iterator(); iterator.hasNext(); ) {
 				Entry<String, List<String>> entry = iterator.next();
 				List<String> event = entry.getValue();
 
 				if (isOwner(userName, index) == true)
-					System.out.println(tuple + ": " + event.get(0) + "\t\t" + event.get(1) + "\t\t" + event.get(2));
+					// System.out.println(tuple + ": " + event.get(0) + "\t\t" + event.get(1) + "\t\t" + event.get(2));
+					sb.append(tuple + ": " + event.get(0) + "\t\t" + event.get(1) + "\t\t" + event.get(2));
 				else if (!event.get(2).equalsIgnoreCase("Private"))
-					System.out.println(tuple + ": " + event.get(0) + "\t\t" + event.get(1) + "\t\t" + event.get(2));
+					// System.out.println(tuple + ": " + event.get(0) + "\t\t" + event.get(1) + "\t\t" + event.get(2));
+					sb.append(tuple + ": " + event.get(0) + "\t\t" + event.get(1) + "\t\t" + event.get(2));
 
 				tuple++;
 			}
 		}
-		System.out.println("-------------------------------------------------");
-		System.out.println("-------------------------------------------------\n");
+		sb.append("-------------------------------------------------");
+		sb.append("-------------------------------------------------\n");
+		// System.out.println("-------------------------------------------------");
+		// System.out.println("-------------------------------------------------\n");
 		allCalendarsIndex++;
+
+		return sb.toString();
 	}
 
 
-
-    public String EchoMessage() throws RemoteException {
+	public String EchoMessage() throws RemoteException {
 		String capitalizedMsg;
-        System.out.println("Server: EchoMessage() invoked...");
-        System.out.println("Server: Message > " + userName);
+		System.out.println("Server: EchoMessage() invoked...");
+		System.out.println("Server: Message > " + userName);
 
-        //compute
-	    capitalizedMsg = userName;//.toUpperCase();
+		//compute
+		capitalizedMsg = userName;//.toUpperCase();
 
-	    //return to client
-        return(capitalizedMsg);
-    }
+		//return to client
+		return (capitalizedMsg);
+	}
 }
    
    
