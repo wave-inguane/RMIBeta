@@ -1,10 +1,10 @@
-// EchoClient.java
+// Client.java
 // 
 // This sample Java RMI client can perform the
 // following operation:
 //    Send a message to a remote object that echoes it back in upper case. 
 //    
-//     Usage:  java EchoClient "My message in quotes"
+//     Usage:  java Client "My message in quotes"
 //  
 
 import java.rmi.*;
@@ -18,13 +18,13 @@ import java.util.Map.Entry;
 import java.util.Scanner;
 import java.util.TreeMap;
 
-public class EchoClient {
+public class Client {
 
 	public static void main(String argv[]) {
 		// Validate command line parameters
 		if (argv.length < 1) {
 
-			System.out.println("Usage: java EchoClient \"MESSAGE\"");
+			System.out.println("Usage: java Client \"MESSAGE\"");
 			System.exit(1);
 		}
 
@@ -36,13 +36,13 @@ public class EchoClient {
 		// on the client machine (it resides on the server).
 		//  System.setSecurityManager(new SecurityManager());
 
-		// Get a remote reference to the EchoImpl class
-		String strName = "rmi://localhost/EchoService";
+		// Get a remote reference to the Calendar class
+		String strName = "rmi://localhost/CalendarServices";
 		System.out.println("Client: Looking up " + strName + "...");
-		Echo RemEcho = null;
+		RemCalendar  remcalendar = null;
 
 		try {
-			RemEcho = (Echo) Naming.lookup(strName);
+			remcalendar = (RemCalendar) Naming.lookup(strName);
 		} catch (Exception e) {
 			System.out.println("Client: Exception thrown looking up " + strName);
 			System.exit(1);
@@ -51,8 +51,8 @@ public class EchoClient {
 		// Send a messge to the remote object
 
 		try {
-			RemEcho.setUserName(userName);
-			String userNameUpperCase = RemEcho.EchoMessage();
+			remcalendar.setUserName(userName);
+			String userNameUpperCase = remcalendar.EchoMessage();
 
 			System.out.println("From Server: " + userNameUpperCase);
 
@@ -90,30 +90,33 @@ public class EchoClient {
 				skip = conIn.nextLine();
 				switch (operation) {
 					case 1:
-						flag = RemEcho.calendarExist(userName);
+						flag = remcalendar.calendarExist(userName);
 						if (flag == false) {
-							flag = true;
+						//	flag = true;
 							System.out.println(".......................................... ");
 							System.out.println("New calendar created for " + userName);
 							System.out.println(".......................................... ");
+
+							flag = remcalendar.createCalendar(userName);
+
 						} else {
 							System.out.println("This " + userName + " username already have a calendar. ");
 						}
 						break;
 
 					case 2:
-						flag = RemEcho.calendarExist(userName);
+						flag = remcalendar.calendarExist(userName);
 						if (flag == false) {
 							System.out.println("Please create a calendar first \n"
 									+ "or select view calendars to select from existing calendars");
 						} else {
-							String result = RemEcho.viewCalendar(userName);
+							String result = remcalendar.viewCalendar(userName);
 							System.out.println(result);
 						}
 						break;
 
 					case 3:
-						flag = RemEcho.calendarExist(userName);
+						flag = remcalendar.calendarExist(userName);
 						if (flag != true) {
 							System.out.println("Please create a calendar first \n"
 									+ "or select view calendars to select from existing calendars");
@@ -127,7 +130,7 @@ public class EchoClient {
 							System.out.println("Enter event access control: Ex: Private, Public, Group, and Open  ");
 							String accessControl = conIn.nextLine();
 
-							flag = RemEcho.addEvent(timeInterval, eventDescription, accessControl);
+							flag = remcalendar.addEvent(timeInterval, eventDescription, accessControl);
 							if (flag == true) {
 								System.out.println(".................... ");
 								System.out.println("Event posted.");
@@ -139,7 +142,7 @@ public class EchoClient {
 						break;
 
 					case 4:
-						flag = RemEcho.calendarExist(userName);
+						flag = remcalendar.calendarExist(userName);
 						if (flag != true) {
 							System.out.println("Please create a calendar first \n"
 									+ "or select view calendars to select from existing calendars");
@@ -156,7 +159,7 @@ public class EchoClient {
 							int eventNumber = conIn.nextInt();
 							skip = conIn.nextLine();
 
-							if (RemEcho.isOwner(userName, calendarNumber) == true) {
+							if (remcalendar.isOwner(userName, calendarNumber) == true) {
 
 								System.out.println("Enter event time: Ex: 9-10 AM, April 20, 2017 ");
 								String timeInterval = conIn.nextLine();
@@ -165,7 +168,7 @@ public class EchoClient {
 								System.out.println("Enter event access control: Ex: Private, Public, Group, and Open  ");
 								String accessControl = conIn.nextLine();
 
-								List<String> event = RemEcho.modifyEvent(eventNumber);
+								List<String> event = remcalendar.modifyEvent(eventNumber);
 								event.add(0, timeInterval);
 								event.add(1, eventDescription);
 								event.add(2, accessControl);
@@ -176,7 +179,7 @@ public class EchoClient {
 						break;
 
 					case 5:
-						flag = RemEcho.calendarExist(userName);
+						flag = remcalendar.calendarExist(userName);
 						if (flag != true) {
 							System.out.println("Please create a calendar first \n"
 									+ "or select view calendars to select from existing calendars");
@@ -188,12 +191,12 @@ public class EchoClient {
 							//System.out.println("Enter username");
 							//userName = conIn.nextLine();
 
-							if (RemEcho.isOwner(userName, calendarNumber) == true) {
+							if (remcalendar.isOwner(userName, calendarNumber) == true) {
 								System.out.println("Enter event number : Ex: 0, 1, 2 ... ");
 								int eventNumber = conIn.nextInt();
 								skip = conIn.nextLine();
 
-								List<String> event = RemEcho.modifyEvent(eventNumber);
+								List<String> event = remcalendar.modifyEvent(eventNumber);
 								event.add(0, "deleted");
 								event.add(1, "deleted");
 								event.add(2, "deleted");
@@ -207,11 +210,11 @@ public class EchoClient {
 						break;
 
 					case 6:
-						System.out.println(RemEcho.viewAllCalendars());
+						System.out.println(remcalendar.viewAllCalendars());
 						break;
 
 					case 8:
-						flag = RemEcho.calendarExist(userName);
+						flag = remcalendar.calendarExist(userName);
 						if (flag != true) {
 							System.out.println("Please create a calendar first \n"
 									+ "or select view calendars to select from existing calendars");
@@ -223,17 +226,17 @@ public class EchoClient {
 							System.out.println("Enter username");
 							userName = conIn.nextLine();
 
-							RemEcho.viewAnyCalendar(userName, index);
+							remcalendar.viewAnyCalendar(userName, index);
 						}
 						break;
 
 					case 9:
 						System.out.println("Please  enter username: ");
 						userName = conIn.nextLine();
-						flag = RemEcho.calendarExist(userName);
+						flag = remcalendar.calendarExist(userName);
 						if (flag != true) {
 							//TODO find work around
-							//calendar =  RemEcho.createAnotherCalendar(userName);
+							//calendar =  remcalendar.createAnotherCalendar(userName);
 							System.out.println(".................... ");
 							System.out.println("New calendar created: ");
 							System.out.println(".................... ");
