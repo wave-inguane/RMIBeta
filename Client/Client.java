@@ -257,15 +257,17 @@ public class Client
 				flag = remcalendar.calendarExist(userName);
 				if(flag != true){
 		            flag =  remcalendar.createAnotherCalendar(userName);
-		            //remcalendar.setUserName(userName);
 		            
+		            
+		            /*
 		            if(flag==true){
+		            DEBUGGER
 		            	result = remcalendar.viewCalendar(userName);
 						System.out.println(result);
 						remcalendar.setUserName(userName);
 						userName = remcalendar.getUserName();
 		            }
-		            
+		            */
 		           
 					System.out.println(".................... ");
 					System.out.println("Another calendar created  ");
