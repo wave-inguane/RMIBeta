@@ -255,18 +255,6 @@ public class Client {
 						flag = remcalendar.calendarExist(userName);
 						if (flag != true) {
 							flag = remcalendar.createAnotherCalendar(userName);
-
-		            
-		            /*
-		            if(flag==true){
-		            DEBUGGER
-		            	result = remcalendar.viewCalendar(userName);
-						System.out.println(result);
-						remcalendar.setUserName(userName);
-						userName = remcalendar.getUserName();
-		            }
-		            */
-
 							System.out.println("...................................");
 							System.out.println("Another calendar created for " + userName);
 							System.out.println("...................................");
@@ -288,10 +276,8 @@ public class Client {
 			System.out.println("End of Interactive Test ");
 
 		} catch (Exception e) {
-
 			System.out.println("Client: Exception thrown calling ...");
 			e.printStackTrace();
-			//System.exit(1);
 		}
 
 	}
