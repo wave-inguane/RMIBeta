@@ -1,4 +1,4 @@
-// EchoImpl.java
+// Calendar.java
 // Implements the remote object
 // Note: The object must extend from UnicastRemoteObject
 //       The object must implement the associated interface
@@ -15,7 +15,7 @@ import java.util.Map.Entry;
 import java.util.Scanner;
 import java.util.TreeMap;
 
-public class EchoImpl extends UnicastRemoteObject implements Echo {
+public class Calendar extends UnicastRemoteObject implements RemCalendar {
 
 	private Map<String, List<String>> calendar; // 
 	private Map<Integer, Map<String, List<String>>>
@@ -31,12 +31,10 @@ public class EchoImpl extends UnicastRemoteObject implements Echo {
 	private int prevIndex[] = new int[1];
 
 
-	public EchoImpl() throws RemoteException {
+	public Calendar() throws RemoteException {
 	}
 
-	;
-
-	public EchoImpl(String userName) throws RemoteException {
+	public Calendar(String userName) throws RemoteException {
 		indexKey = 0;
 		this.userName = userName;
 		users.add(userName);
@@ -49,14 +47,17 @@ public class EchoImpl extends UnicastRemoteObject implements Echo {
 	}
 
 	public String getUserName() throws RemoteException {
+	System.out.println("Server: Message > " + "getUserName() invoked");
 		return userName;
 	}
 
 	public void setUserName(String name) throws RemoteException {
+	System.out.println("Server: Message > " + "setUserName() invoked");
 		userName = name;
 	}
 
 	public boolean calendarExist(String userName) throws RemoteException {
+	System.out.println("Server: Message > " + "calendarExist() invoked");
 		String exist = calendarExist.get(userName);
 		if (exist != null)
 			return true;
@@ -64,8 +65,9 @@ public class EchoImpl extends UnicastRemoteObject implements Echo {
 	}
 
 	public boolean createCalendar(String userName) throws RemoteException {
+	System.out.println("Server: Message > " + "createCalendar() invoked");
 		if (calendarExist(userName) == false) {
-			// new EchoImpl(userName);
+			// new Calendar(userName);
 			indexKey = 0;
 			this.userName = userName;
 			users.add(userName);
@@ -84,6 +86,7 @@ public class EchoImpl extends UnicastRemoteObject implements Echo {
 	public boolean addEvent(String timeInterval,
 	                        String eventDescription,
 	                        String accessControl) throws RemoteException {
+	                        System.out.println("Server: Message > " + "addEvent() invoked");
 		int j = 0;
 		tuple = new ArrayList<>();
 		tuple.add(0, timeInterval);
@@ -107,12 +110,13 @@ public class EchoImpl extends UnicastRemoteObject implements Echo {
 	}
 
 	public String viewCalendar(String userName) throws RemoteException {
+	System.out.println("Server: Message > " + "viewCalendar() invoked");
 		StringBuilder sb = new StringBuilder();
 		int tuple = 0;
-		sb.append("\t\t\t " + userName + "'s  CALENDAR");
-		sb.append("...............................................");
-		sb.append("EVENT# \t\t TIME \t\t EVENT \t\t ACCESS");
-		sb.append("...............................................");
+		sb.append("\t\t\t " + userName + "'s  CALENDAR \n");
+		sb.append("...............................................\n");
+		sb.append("EVENT# \t\t TIME \t\t EVENT \t\t ACCESS\n");
+		sb.append("...............................................\n");
 		if (calendar != null) {
 			for (Iterator<Map.Entry<String, List<String>>> iterator = calendar.entrySet().iterator(); iterator.hasNext(); ) {
 				Entry<String, List<String>> entry = iterator.next();
@@ -129,14 +133,14 @@ public class EchoImpl extends UnicastRemoteObject implements Echo {
 	}
 
 	public List<String> deleteEvent(int eventNumber) throws RemoteException {
+	System.out.println("Server: Message > " + "deleteEvent() invoked");
 		return modifyEvent(eventNumber);
 	}
 
 
 	public List<String> modifyEvent(int eventNumber) throws RemoteException {
+	System.out.println("Server: Message > " + "modifyEvent() invoked");
 		List<String> event = null;
-
-		//String name =
 
 		if (calendars != null)
 			for (Iterator<Map.Entry<Integer, Map<String, List<String>>>> iterator = calendars.entrySet().iterator(); iterator.hasNext(); ) {
@@ -162,7 +166,8 @@ public class EchoImpl extends UnicastRemoteObject implements Echo {
 		return event;
 	}
 
-	public EchoImpl createAnotherCalendar(String userName) throws RemoteException {
+	public Calendar createAnotherCalendar(String userName) throws RemoteException {
+	System.out.println("Server: Message > " + "createAnotherCalendar() invoked");
 		int j = 0;
 		Map<String, List<String>> map = calendars.get(j);
 		while (map != null) {
@@ -171,11 +176,12 @@ public class EchoImpl extends UnicastRemoteObject implements Echo {
 		}
 		index = prevIndex[0] + 1;
 
-		return new EchoImpl(userName);
+		return new Calendar(userName);
 	}
 
 
 	public boolean isOwner(String userName, int calendarNumber) throws RemoteException {
+	System.out.println("Server: Message > " + "isOwner() invoked");
 		String name = users.get(calendarNumber);
 		if (name.equalsIgnoreCase(userName))
 			return true;
@@ -183,7 +189,10 @@ public class EchoImpl extends UnicastRemoteObject implements Echo {
 	}
 
 
+
 	public String viewAllCalendars() throws RemoteException {
+	System.out.println("Server: Message > " + "viewAllCalendars() invoked");
+	
 		StringBuilder sb = new StringBuilder();
 		int i;
 		if (allcalendars != null) {
@@ -195,7 +204,11 @@ public class EchoImpl extends UnicastRemoteObject implements Echo {
 	}
 
 
+   /**
+   * This should be private we have to remove from interface
+   */
 	public String viewAllCalendarsHelper(Map<String, List<String>> map) throws RemoteException {
+	System.out.println("Server: Message > " + "viewAllCalendarsHelper() invoked");
 		StringBuilder sb = new StringBuilder();
 		int tuple = 0;
 		String name = users.get(allCalendarsIndex = allCalendarsIndex % users.size());
@@ -236,6 +249,7 @@ public class EchoImpl extends UnicastRemoteObject implements Echo {
 	}
 
 	public String viewAnyCalendar(String userName, int index) throws RemoteException {
+	System.out.println("Server: Message > " + "viewAnyCalendar() invoked");
 		StringBuilder sb = new StringBuilder();
 		int tuple = 0;
 		String name = userName;
