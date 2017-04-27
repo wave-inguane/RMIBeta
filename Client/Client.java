@@ -106,14 +106,17 @@ public class Client {
 
 				skip = conIn.nextLine();
 				switch (operation) {
-
 					case 1:
 						flag = remcalendar.calendarExist(userName);
 						if (flag != true) {
 							flag = remcalendar.createCalendar(userName);
-							System.out.println(".................... ");
-							System.out.println("New calendar created for " + userName);
-							System.out.println(".................... ");
+							if(flag) {
+								System.out.println(".......................................");
+								System.out.println("New calendar created for " + userName);
+								System.out.println(".......................................");
+							} else {
+								System.out.println("The server could not create a calendar for " + userName);
+							}
 						} else {
 							System.out.println("This " + userName + " username already have a calendar. ");
 						}
