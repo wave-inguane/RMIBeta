@@ -93,9 +93,16 @@ public class EchoClient {
 						flag = RemEcho.calendarExist(userName);
 						if (flag == false) {
 							flag = true;
-							System.out.println(".......................................... ");
-							System.out.println("New calendar created for " + userName);
-							System.out.println(".......................................... ");
+							boolean isCreated = RemEcho.createCalendar(userName);
+							if(isCreated) {
+								System.out.println(".......................................... ");
+								System.out.println("New calendar created for " + userName);
+								System.out.println(".......................................... ");
+								String obj = RemEcho.viewCalendar(userName);
+								System.out.println("Here is the print of the remoject: " + obj);
+							} else {
+								System.out.println("Error creating a calendar!");
+							}
 						} else {
 							System.out.println("This " + userName + " username already have a calendar. ");
 						}

@@ -17,7 +17,7 @@ import java.util.TreeMap;
 
 public class EchoImpl extends UnicastRemoteObject implements Echo {
 
-	private Map<String, List<String>> calendar;
+	private Map<String, List<String>> calendar; // 
 	private Map<Integer, Map<String, List<String>>>
 			calendars = new TreeMap<Integer, Map<String, List<String>>>();
 	private List<Map<String, List<String>>> allcalendars = new ArrayList<>();
