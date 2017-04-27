@@ -1,4 +1,4 @@
-// Echo.java interface for the RMI remote object.
+// RemCalendar.java interface for the RMI remote object.
 // Note:  Interface must extend from java.rmi.Remote
 //          Methods must throw RemoteExcpetion
 
@@ -12,7 +12,7 @@ import java.util.Map.Entry;
 import java.util.Scanner;
 import java.util.TreeMap;
 
-public interface Echo extends Remote
+public interface RemCalendar extends Remote
 {
      String EchoMessage() throws RemoteException;
      public void setUserName(String name) throws RemoteException;
@@ -22,7 +22,7 @@ public interface Echo extends Remote
      public boolean addEvent(String timeInterval, String eventDescription, String accessControl)throws RemoteException;
      public void viewCalendar(String userName)throws RemoteException;
      public List<String> deleteEvent(int eventNumber) throws RemoteException;
-     //public  EchoImpl createAnotherCalendar(String userName)throws RemoteException;
+     public  Calendar createAnotherCalendar(String userName)throws RemoteException;
      public boolean isOwner(String userName, int calendarNumber) throws RemoteException;
      public void viewAllCalendarsHelper(Map<String,List<String>> map) throws RemoteException;
      public  void viewAnyCalendar(String userName, int index)throws RemoteException;

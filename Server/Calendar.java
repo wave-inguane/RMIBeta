@@ -1,4 +1,4 @@
-// EchoImpl.java
+// Calendar.java
 // Implements the remote object
 // Note: The object must extend from UnicastRemoteObject
 //       The object must implement the associated interface
@@ -15,7 +15,7 @@ import java.util.Map.Entry;
 import java.util.Scanner;
 import java.util.TreeMap;
 
-public class EchoImpl extends UnicastRemoteObject implements Echo
+public class Calendar extends UnicastRemoteObject implements RemCalendar
 {
     
     private  Map<String, List<String>> calendar;
@@ -32,10 +32,10 @@ public class EchoImpl extends UnicastRemoteObject implements Echo
 	private  int prevIndex[] = new int[1];
 	
 	
-    public EchoImpl() throws RemoteException { };
+    public Calendar() throws RemoteException { };
     
     
-    public EchoImpl(String userName) throws RemoteException{
+    public Calendar(String userName) throws RemoteException{
 		indexKey = 0;
 		this.userName = userName;
 		users.add(userName);
@@ -67,7 +67,7 @@ public class EchoImpl extends UnicastRemoteObject implements Echo
 	public boolean createCalendar(String userName) throws RemoteException{
 	
 		if(calendarExist(userName) == false){
-			new EchoImpl(userName);
+			new Calendar(userName);
 			return true;
 		}
 		return false;
@@ -157,7 +157,7 @@ public class EchoImpl extends UnicastRemoteObject implements Echo
 		return event;
 	}
 
-	public  EchoImpl createAnotherCalendar(String userName)throws RemoteException{
+	public  Calendar createAnotherCalendar(String userName)throws RemoteException{
 		int  j = 0;
 		Map<String, List<String>> map = calendars.get(j);
 		while(map!=null){
@@ -167,7 +167,7 @@ public class EchoImpl extends UnicastRemoteObject implements Echo
 
 		index  = prevIndex[0] + 1;
 
-		return new EchoImpl (userName);
+		return new Calendar (userName);
 	}
 
 	
