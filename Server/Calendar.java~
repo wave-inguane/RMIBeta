@@ -94,7 +94,7 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 	                        System.out.println("Server: Message > " + "addEvent() invoked");
 
 
-    //TODO check for conflits see specs 
+                //TODO check for conflits see specs 
 		//If there is a conflit return false
 
 		int j = 0;
