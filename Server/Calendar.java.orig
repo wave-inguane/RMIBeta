@@ -30,20 +30,18 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 	private Map<String, String> calendarExist = new LinkedHashMap<String, String>();
 	private int prevIndex[] = new int[1];
 
-
 	public Calendar() throws RemoteException {
 	}
 
 	public Calendar(String userName) throws RemoteException {
 		indexKey = 0;
-		this.userName = userName;
+		userName = userName;
 		users.add(userName);
 		calendarExist.put(userName, "exist");
 		calendar = new TreeMap<>();
 		allcalendars.add(this.calendar);
-		calendars.put(index, this.calendar);
+		calendars.put(index++, this.calendar);
 		prevIndex[0] = index;
-		index++;
 	}
 
 	public String getUserName() throws RemoteException {

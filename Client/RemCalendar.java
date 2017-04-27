@@ -23,13 +23,14 @@ public interface RemCalendar extends Remote {
 
 	public boolean createCalendar(String userName) throws RemoteException;
 
+	public boolean createAnotherCalendar(String userName) throws RemoteException;
+
 	public boolean addEvent(String timeInterval, String eventDescription, String accessControl) throws RemoteException;
 
 	public String viewCalendar(String userName) throws RemoteException;
 
 	public List<String> deleteEvent(int eventNumber) throws RemoteException;
 
-	//     public  Calendar createAnotherCalendar(String userName)throws RemoteException;
 	public boolean isOwner(String userName, int calendarNumber) throws RemoteException;
 
 	public String viewAllCalendarsHelper(Map<String, List<String>> map) throws RemoteException;
@@ -39,4 +40,8 @@ public interface RemCalendar extends Remote {
 	public List<String> modifyEvent(int eventNumber) throws RemoteException;
 
 	public String viewAllCalendars() throws RemoteException;
+
+	public boolean isEmpty() throws RemoteException;
+
+	public ArrayList<String> existingUsers() throws RemoteException;
 }

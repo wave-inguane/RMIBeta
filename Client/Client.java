@@ -39,12 +39,10 @@ public class Client {
 
 		// Get a remote reference to the Calendar class
 		String strName = "rmi://localhost/CalendarServices";
-//      String strName = "rmi://localhost:2934/CalendarServices";
 		System.out.println("Client: Looking up " + strName + "...");
 		RemCalendar remcalendar = null;
 
 		try {
-
 			remcalendar = (RemCalendar) Naming.lookup(strName);
 		} catch (Exception e) {
 
@@ -56,7 +54,6 @@ public class Client {
 
 
 		try {
-
 			remcalendar.setUserName(userName);
 			String userNameUpperCase = remcalendar.EchoMessage();
 
@@ -69,19 +66,8 @@ public class Client {
 			String skip;//skip end of line after reading an integer
 			boolean keepGoing; //flag for "choose operation" loop
 			int operation = 0; //indicates users choice of operation
-			//String userName = userName2;
-
-			//System.out.println("Calendar exist ? : "+ calendar);
-
-			//System.out.println("Server: work() invoked ");
-			//System.out.println("Client: " + userName );
-			//userName = conIn.nextLine();
-
-			//flag = remcalendar.createCalendar(userName);
-
 			keepGoing = true;
 			while (keepGoing) {
-
 				System.out.println("\nChoose a Task: ");
 				System.out.println("1: create calendar");
 				System.out.println("2: view calendar ");
@@ -94,9 +80,9 @@ public class Client {
 				System.out.println("9: create another calendar ");
 				System.out.println("10: exit ");
 
-				if (conIn.hasNextInt())
+				if (conIn.hasNextInt()) {
 					operation = conIn.nextInt();
-				else {
+				} else {
 					System.out.println("................................ ");
 					System.out.println("Error: you must enter an integer ");
 					System.out.println("Terminating the program... ");
@@ -249,19 +235,34 @@ public class Client {
 						break;
 
 					case 9:
-						System.out.println("Please  enter username: ");
+						System.out.println("Please enter username: ");
 						userName = conIn.nextLine();
 						flag = remcalendar.calendarExist(userName);
-						if (flag != true) {
+						if (flag == false) {
 							//TODO find work around
-							//calendar =  remcalendar.createAnotherCalendar(userName);
-							System.out.println(".................... ");
-							System.out.println("New calendar created: ");
-							System.out.println(".................... ");
+							boolean anotherCalenCreated = remcalendar.createAnotherCalendar(userName);
+							if(anotherCalenCreated) {
+								System.out.println(".......................................");
+								System.out.println("New calendar created for " + userName);
+								System.out.println(".......................................");
+								// -------------------- TEST-----------------
+								ArrayList<String> list = remcalendar.existingUsers();
+								if(list.size() == 0) {
+									System.out.println("asfasdfsafasdfds");
+								}
+								for(int i = 0; i < list.size(); i++) {
+									System.out.print(list.get(i) + ", ");
+								}
+							} else {
+								System.out.println("Failed to create another calendar!\n" + 
+									"Refer to createAnotherCalendar() method in server side");
+							}
 						} else {
-							System.out.println("Please provide different username. ");
+							System.out.println("Please provide different username.\n" +
+								"The entered username already exists!");
 						}
 						break;
+
 					case 10:
 						keepGoing = false;
 						break;
@@ -270,8 +271,6 @@ public class Client {
 						System.out.println("Error in operation choice.");
 						break;
 				}
-				//end switch---------------------------------------------------
-
 			}//end while loop
 			System.out.println("End of Interactive Test ");
 
