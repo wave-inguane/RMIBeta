@@ -117,7 +117,7 @@ public class Client
 					flag =	remcalendar.createCalendar(userName);
              //       flag = true;
 					System.out.println(".................... ");
-					System.out.println("New calendar created for " + userName);
+					System.out.println("New calendar created ");
 					System.out.println(".................... ");
 				}else{
 					System.out.println("This " +userName+ " username already have a calendar. ");
@@ -130,8 +130,7 @@ public class Client
 					System.out.println("Please create a calendar first \n"
 							+ "or select view calendars to select from existing calendars");
 				}else{
-					String result = remcalendar.viewCalendar(userName);
-					System.out.println(result);
+					remcalendar.viewCalendar(userName);
 				}
 				break;
 
