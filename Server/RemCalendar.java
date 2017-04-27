@@ -41,5 +41,5 @@ public interface RemCalendar extends Remote {
      
      public  String viewAllCalendars()throws RemoteException;
      
-     public void updateEvent(List<String> newEvent) throws RemoteException;
+     // public void updateEvent(List<String> newEvent) throws RemoteException;
 }
