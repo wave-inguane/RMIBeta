@@ -176,7 +176,7 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 	}
 	
 	
-	public  void viewAllCalendars()throws RemoteException{
+	public void viewAllCalendars()throws RemoteException{
 		int i;
 		if(allcalendars!=null)
 			for(i = 0; i < allcalendars.size(); i++)
@@ -213,7 +213,7 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 		allCalendarsIndex++;
 	}
 
-	public  void viewAnyCalendar(String userName, int index)throws RemoteException{
+	public void viewAnyCalendar(String userName, int index)throws RemoteException{
 
 		int tuple = 0;
 		String name = userName;
