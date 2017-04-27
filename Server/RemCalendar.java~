@@ -26,5 +26,5 @@ public interface RemCalendar extends Remote {
      public String viewAllCalendarsHelper(Map<String,List<String>> map) throws RemoteException;
      public  String viewAnyCalendar(String userName, int index)throws RemoteException;
      public List<String>  modifyEvent(int eventNumber)throws RemoteException;
-     public  String viewAllCalendars()throws RemoteException;
+     public  void viewAllCalendars()throws RemoteException;
 }
