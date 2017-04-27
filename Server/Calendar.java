@@ -30,11 +30,14 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 	private Map<String, String> calendarExist = new LinkedHashMap<String, String>();
 	private int prevIndex[] = new int[1];
 
+  private Map<String, List<String>> map;
+  private List<String> updateEvent;
+
 
 	public Calendar() throws RemoteException {
 	}
 
-    /*
+       /*
 	public Calendar(String userName) throws RemoteException {
 		indexKey = 0;
 		this.userName = userName;
@@ -89,6 +92,11 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 	                        String eventDescription,
 	                        String accessControl) throws RemoteException {
 	                        System.out.println("Server: Message > " + "addEvent() invoked");
+
+
+    //TODO check for conflits see specs 
+		//If there is a conflit return false
+
 		int j = 0;
 		tuple = new ArrayList<>();
 		tuple.add(0, timeInterval);
@@ -126,7 +134,7 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 
 				if (key.equalsIgnoreCase(userName + tuple)) {
 					List<String> event = entry.getValue();
-					sb.append(tuple + ": " + event.get(0) + "\t\t" + event.get(1) + "\t\t" + event.get(2));
+					sb.append(tuple + ": " + event.get(0) + "\t\t" + event.get(1) + "\t\t" + event.get(2)+"\n");
 				}
 				tuple++;
 			}
@@ -159,16 +167,27 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 
 						if (key2.equalsIgnoreCase(userName + eventNumber)) {
 							event = entry2.getValue();
-							//System.out.println("................ ");
-							//System.out.println(" MODIFIED EVENT ");
-							//System.out.println("................ ");
-							//System.out.println(key2+": "+event.get(0) +"\t\t"+ event.get(1) +"\t\t"+ event.get(2));
+							System.out.println("................ ");
+							System.out.println(" MODIFIED EVENT ");
+							System.out.println("................ ");
+							System.out.println(key2+": "+event.get(0) +"\t\t"+ event.get(1) +"\t\t"+ event.get(2));
+               
+             //update the object
+						 //updateEvent = event;
+              //currentMap = map;
+
 						}
 					}
 				}
 			}
 		return event;
 	}
+
+
+ //public void updateEvent(List<String> newEvent) throws RemoteException{
+  //   updateEvent = newEvent;
+    // currentMap.p
+ // }
 
 	public boolean createAnotherCalendar(String userName) throws RemoteException {
 	System.out.println("Server: Message > " + "createAnotherCalendar() invoked");

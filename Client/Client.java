@@ -192,6 +192,8 @@ public class Client
 						event.add(0, timeInterval);
 						event.add(1, eventDescription);
 						event.add(2, accessControl);
+
+                                                remcalendar.updateEvent(event);
 					}else{
 						System.out.println(" Access denied ");
 					}
