@@ -21,7 +21,7 @@ public interface RemCalendar extends Remote {
      public boolean addEvent(String timeInterval, String eventDescription, String accessControl)throws RemoteException;
      public String viewCalendar(String userName)throws RemoteException;
      public List<String> deleteEvent(int eventNumber) throws RemoteException;
-     public  Calendar createAnotherCalendar(String userName)throws RemoteException;
+     public  boolean createAnotherCalendar(String userName)throws RemoteException;
      public boolean isOwner(String userName, int calendarNumber) throws RemoteException;
      public String viewAllCalendarsHelper(Map<String,List<String>> map) throws RemoteException;
      public  String viewAnyCalendar(String userName, int index)throws RemoteException;
