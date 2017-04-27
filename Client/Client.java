@@ -116,9 +116,9 @@ public class Client
 				if(flag != true){
 					flag =	remcalendar.createCalendar(userName);
              //       flag = true;
-					System.out.println(".................... ");
+					System.out.println("...................................");
 					System.out.println("New calendar created for " + userName);
-					System.out.println(".................... ");
+					System.out.println("...................................");
 				}else{
 					System.out.println("This " +userName+ " username already have a calendar. ");
 				}
@@ -152,9 +152,9 @@ public class Client
 
 					flag =  remcalendar.addEvent(timeInterval,eventDescription,accessControl);
 					if(flag==true){
-						System.out.println(".................... ");
+						System.out.println("...................................");
 						System.out.println("Event posted.");
-						System.out.println(".................... ");
+						System.out.println("...................................");
 					}else{
 						System.out.println("Post failed! ");
 					}
@@ -222,9 +222,9 @@ public class Client
 						event.add(0, "deleted");
 						event.add(1, "deleted");
 						event.add(2, "deleted");
-						System.out.println(" ............................. ");
+						System.out.println("...................................");
 						System.out.println(" Event deleted ");
-						System.out.println(" ............................. ");
+						System.out.println("...................................");
 					}else{
 						System.out.println(" Access denied ");
 					}
@@ -271,11 +271,11 @@ public class Client
 		            }
 		            */
 		           
-					System.out.println(".................... ");
-					System.out.println("Another calendar created  ");
-					System.out.println(".................... ");
+					System.out.println("...................................");
+					System.out.println("Another calendar created for " + userName);
+					System.out.println("...................................");
 				}else{
-					System.out.println("Please provide different username. ");
+					System.out.println("Please provide different username.");
 				}
 				break;
 			case 10:
