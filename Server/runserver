@@ -1,3 +1,3 @@
-javac EchoServer.java
-rmiregister &
-java -Djava.security.policy=policy.txt EchoServer &
+javac CalendarManager.java
+rmiregistry &
+java -Djava.security.policy=policy.txt CalendarManager &
