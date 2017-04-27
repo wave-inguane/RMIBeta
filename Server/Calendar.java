@@ -47,17 +47,17 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 	}
 
 	public String getUserName() throws RemoteException {
-	System.out.println("Server: Message > " + "getUserName() invoked");
+		System.out.println("Server: Message > " + "getUserName() invoked");
 		return userName;
 	}
 
 	public void setUserName(String name) throws RemoteException {
-	System.out.println("Server: Message > " + "setUserName() invoked");
+		System.out.println("Server: Message > " + "setUserName() invoked");
 		userName = name;
 	}
 
 	public boolean calendarExist(String userName) throws RemoteException {
-	System.out.println("Server: Message > " + "calendarExist() invoked");
+		System.out.println("Server: Message > " + "calendarExist() invoked");
 		String exist = calendarExist.get(userName);
 		if (exist != null)
 			return true;
@@ -65,7 +65,7 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 	}
 
 	public boolean createCalendar(String userName) throws RemoteException {
-	System.out.println("Server: Message > " + "createCalendar() invoked");
+		System.out.println("Server: Message > " + "createCalendar() invoked");
 		if (calendarExist(userName) == false) {
 			// new Calendar(userName);
 			indexKey = 0;
@@ -86,7 +86,7 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 	public boolean addEvent(String timeInterval,
 	                        String eventDescription,
 	                        String accessControl) throws RemoteException {
-	                        System.out.println("Server: Message > " + "addEvent() invoked");
+		System.out.println("Server: Message > " + "addEvent() invoked");
 		int j = 0;
 		tuple = new ArrayList<>();
 		tuple.add(0, timeInterval);
@@ -110,7 +110,7 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 	}
 
 	public String viewCalendar(String userName) throws RemoteException {
-	System.out.println("Server: Message > " + "viewCalendar() invoked");
+		System.out.println("Server: Message > " + "viewCalendar() invoked");
 		StringBuilder sb = new StringBuilder();
 		int tuple = 0;
 		sb.append("\t\t\t " + userName + "'s  CALENDAR \n");
@@ -133,13 +133,13 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 	}
 
 	public List<String> deleteEvent(int eventNumber) throws RemoteException {
-	System.out.println("Server: Message > " + "deleteEvent() invoked");
+		System.out.println("Server: Message > " + "deleteEvent() invoked");
 		return modifyEvent(eventNumber);
 	}
 
 
 	public List<String> modifyEvent(int eventNumber) throws RemoteException {
-	System.out.println("Server: Message > " + "modifyEvent() invoked");
+		System.out.println("Server: Message > " + "modifyEvent() invoked");
 		List<String> event = null;
 
 		//String name =
@@ -169,7 +169,7 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 	}
 
 	public Calendar createAnotherCalendar(String userName) throws RemoteException {
-	System.out.println("Server: Message > " + "createAnotherCalendar() invoked");
+		System.out.println("Server: Message > " + "createAnotherCalendar() invoked");
 		int j = 0;
 		Map<String, List<String>> map = calendars.get(j);
 		while (map != null) {
@@ -183,7 +183,7 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 
 
 	public boolean isOwner(String userName, int calendarNumber) throws RemoteException {
-	System.out.println("Server: Message > " + "isOwner() invoked");
+		System.out.println("Server: Message > " + "isOwner() invoked");
 		String name = users.get(calendarNumber);
 		if (name.equalsIgnoreCase(userName))
 			return true;
@@ -191,10 +191,9 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 	}
 
 
-
 	public String viewAllCalendars() throws RemoteException {
-	System.out.println("Server: Message > " + "viewAllCalendars() invoked");
-	
+		System.out.println("Server: Message > " + "viewAllCalendars() invoked");
+
 		StringBuilder sb = new StringBuilder();
 		int i;
 		if (allcalendars != null) {
@@ -206,11 +205,11 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 	}
 
 
-   /**
-   * This should be private we have to remove from interface
-   */
+	/**
+	 * This should be private we have to remove from interface
+	 */
 	public String viewAllCalendarsHelper(Map<String, List<String>> map) throws RemoteException {
-	System.out.println("Server: Message > " + "viewAllCalendarsHelper() invoked");
+		System.out.println("Server: Message > " + "viewAllCalendarsHelper() invoked");
 		StringBuilder sb = new StringBuilder();
 		int tuple = 0;
 		String name = users.get(allCalendarsIndex = allCalendarsIndex % users.size());
@@ -237,7 +236,7 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 						// System.out.println(tuple + ": " + event.get(0) + "\t\t" + event.get(1) + "\t\t" + event.get(2));
 					else if (!event.get(2).equalsIgnoreCase("Private"))
 						sb.append(tuple + ": " + event.get(0) + "\t\t" + event.get(1) + "\t\t" + event.get(2));
-						// System.out.println(tuple + ": " + event.get(0) + "\t\t" + event.get(1) + "\t\t" + event.get(2));
+					// System.out.println(tuple + ": " + event.get(0) + "\t\t" + event.get(1) + "\t\t" + event.get(2));
 				}
 				tuple++;
 			}
@@ -251,7 +250,7 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 	}
 
 	public String viewAnyCalendar(String userName, int index) throws RemoteException {
-	System.out.println("Server: Message > " + "viewAnyCalendar() invoked");
+		System.out.println("Server: Message > " + "viewAnyCalendar() invoked");
 		StringBuilder sb = new StringBuilder();
 		int tuple = 0;
 		String name = userName;
