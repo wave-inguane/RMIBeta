@@ -15,9 +15,10 @@ import java.util.Map.Entry;
 import java.util.Scanner;
 import java.util.TreeMap;
 
-public class Calendar extends UnicastRemoteObject implements RemCalendar {
- 	
- 	private  Map<String, List<String>> calendar;
+public class Calendar extends UnicastRemoteObject implements RemCalendar
+{
+    
+    private  Map<String, List<String>> calendar;
 	private  Map<Integer, Map<String,List<String>>>
 	calendars = new TreeMap<Integer, Map<String,List<String>>>();
 	private  List<Map<String, List<String>>> allcalendars = new ArrayList<>();
@@ -72,7 +73,8 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 		return false;
 	}
 	
-	public boolean addEvent(String timeInterval, String eventDescription, String accessControl)throws RemoteException {
+		public boolean addEvent(String timeInterval, String eventDescription, String accessControl)throws RemoteException{
+
 		int j = 0;
 		tuple = new ArrayList<>();
 		tuple.add(0, timeInterval);
@@ -96,7 +98,8 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 	}
 	
 	
-	public void viewCalendar(String userName)throws RemoteException {
+		public void viewCalendar(String userName)throws RemoteException{
+
 		int tuple = 0;
 		System.out.println("\t\t\t "+userName+ "'s  CALENDAR");
 		System.out.println("...............................................");
@@ -154,7 +157,7 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 		return event;
 	}
 
-	public Calendar createAnotherCalendar(String userName)throws RemoteException{
+	public  Calendar createAnotherCalendar(String userName)throws RemoteException{
 		int  j = 0;
 		Map<String, List<String>> map = calendars.get(j);
 		while(map!=null){
@@ -240,9 +243,12 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 		System.out.println("-------------------------------------------------\n");
 		allCalendarsIndex++;
 	}
+
+
 	
-    public String EchoMessage() throws RemoteException {
-		String capitalizedMsg;
+    public String EchoMessage() throws RemoteException
+    {
+	String capitalizedMsg;
 
         System.out.println("Server: EchoMessage() invoked...");
         System.out.println("Server: Message > " + userName);
@@ -254,3 +260,7 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
         return(capitalizedMsg);
     }
 }
+   
+   
+   
+

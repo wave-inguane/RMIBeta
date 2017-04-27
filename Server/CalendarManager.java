@@ -1,5 +1,6 @@
 // CalendarManager.java
 <<<<<<< HEAD
+<<<<<<< HEAD
 // Creates and registers the Echo Service
 
 import java.rmi.*;

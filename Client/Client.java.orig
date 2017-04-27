@@ -114,7 +114,7 @@ public class Client
 			case 1:
 				flag =  remcalendar.calendarExist(userName);
 				if(flag != true){
-					remcalendar.createCalendar(userName);
+					 remcalendar.createCalendar(userName);
                     flag = true;
 					System.out.println(".................... ");
 					System.out.println("New calendar created ");
