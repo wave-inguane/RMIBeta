@@ -108,25 +108,14 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 					currentTimeInterval = event.get(0).split("-");
 					startTime.add(Integer.parseInt(currentTimeInterval[0]));
 					endTime.add(Integer.parseInt(currentTimeInterval[1]));
-					/* String[] usersTimeInterval = event.get(0).split("-");
-					String[] newTimeInterval = timeInterval.split("-");
-
-					if((Integer.parseInt(newTimeInterval[0]) >= Integer.parseInt(usersTimeInterval[0]) &&
-						Integer.parseInt(newTimeInterval[1]) <= Integer.parseInt(usersTimeInterval[1])) ||
-						(Integer.parseInt(usersTimeInterval[0]) >= Integer.parseInt(newTimeInterval[0]) &&
-							Integer.parseInt(usersTimeInterval[1]) <= Integer.parseInt(newTimeInterval[1])))  {
-						return false;
-					}*/
 				}
 				tuple++;
 			}
 			if (!startTime.isEmpty()) {
 				for (int i = 0; i < startTime.size(); i++) {
-					for (int j = 0; j < endTime.size(); j++) {
-						if (Integer.parseInt(newTimeInterval[1]) >= startTime.get(i) &&
-								Integer.parseInt(newTimeInterval[0]) <= endTime.get(j)) {
-							return false;
-						}
+					if (Integer.parseInt(newTimeInterval[1]) >= startTime.get(i) &&
+							Integer.parseInt(newTimeInterval[0]) <= endTime.get(i)) {
+						return false;
 					}
 				}
 			}
@@ -280,16 +269,12 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 		int tuple = 0;
 		String name = users.get(allCalendarsIndex = allCalendarsIndex % users.size());
 		if (!name.equalsIgnoreCase(null)) {
-			// System.out.println("[ " + allCalendarsIndex + " ] \t\t " + name + "'s  CALENDAR\n");
 			sb.append("[ " + allCalendarsIndex + " ] \t\t " + name + "'s  CALENDAR\n");
 		}
 
-		// System.out.println("...............................................\n");
-		// System.out.println("EVENT# \t\t TIME \t\t EVENT \t\t ACCESS\n");
-		// System.out.println("...............................................\n");
-		sb.append("...............................................\n");
+		sb.append(".......................................................................\n");
 		sb.append("EVENT# \t\t TIME \t\t EVENT \t\t ACCESS\n");
-		sb.append("...............................................\n");
+		sb.append(".......................................................................\n");
 		if (map != null) {
 			for (Iterator<Map.Entry<String, List<String>>> iterator = map.entrySet().iterator(); iterator.hasNext(); ) {
 				Entry<String, List<String>> entry = iterator.next();
@@ -298,19 +283,15 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 				if (key.equalsIgnoreCase(name + tuple)) {
 					List<String> event = entry.getValue();
 					if (isOwner(userName, allCalendarsIndex) == true)
-						sb.append(tuple + ": " + event.get(0) + "\t\t" + event.get(1) + "\t\t" + event.get(2) + "\n");
-						// System.out.println(tuple + ": " + event.get(0) + "\t\t" + event.get(1) + "\t\t" + event.get(2));
+						sb.append(tuple + ": \t\t" + event.get(0) + "\t\t" + event.get(1) + "\t\t" + event.get(2) + "\n");
 					else if (!event.get(2).equalsIgnoreCase("Private"))
-						sb.append(tuple + ": " + event.get(0) + "\t\t" + event.get(1) + "\t\t" + event.get(2) + "\n");
-					// System.out.println(tuple + ": " + event.get(0) + "\t\t" + event.get(1) + "\t\t" + event.get(2));
+						sb.append(tuple + ": \t\t" + event.get(0) + "\t\t" + event.get(1) + "\t\t" + event.get(2) + "\n");
 				}
 				tuple++;
 			}
 		}
-		sb.append("-------------------------------------------------\n");
-		sb.append("-------------------------------------------------\n");
-		// System.out.println("-------------------------------------------------");
-		// System.out.println("-------------------------------------------------\n");
+		sb.append(".......................................................................\n");
+		sb.append(".......................................................................\n");
 		allCalendarsIndex++;
 		return sb.toString();
 	}
@@ -335,19 +316,16 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 				List<String> event = entry.getValue();
 
 				if (isOwner(userName, index) == true)
-					// System.out.println(tuple + ": " + event.get(0) + "\t\t" + event.get(1) + "\t\t" + event.get(2));
 					sb.append(tuple + ": " + event.get(0) + "\t\t" + event.get(1) + "\t\t" + event.get(2));
 				else if (!event.get(2).equalsIgnoreCase("Private"))
-					// System.out.println(tuple + ": " + event.get(0) + "\t\t" + event.get(1) + "\t\t" + event.get(2));
 					sb.append(tuple + ": " + event.get(0) + "\t\t" + event.get(1) + "\t\t" + event.get(2));
 
+				sb.append("\n");
 				tuple++;
 			}
 		}
 		sb.append("-------------------------------------------------");
 		sb.append("-------------------------------------------------\n");
-		// System.out.println("-------------------------------------------------");
-		// System.out.println("-------------------------------------------------\n");
 		allCalendarsIndex++;
 
 		return sb.toString();

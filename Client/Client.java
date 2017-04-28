@@ -53,7 +53,6 @@ public class Client {
 		}
 
 		try {
-
 			remcalendar.setUserName(userName);
 			String userNameUpperCase = remcalendar.EchoMessage();
 
@@ -84,12 +83,11 @@ public class Client {
 				if (conIn.hasNextInt())
 					operation = conIn.nextInt();
 				else {
-					System.out.println("................................ ");
+					System.out.println("\n................................ ");
 					System.out.println("Error: you must enter an integer ");
 					System.out.println("Terminating the program... ");
 					System.out.println("................................ ");
 				}
-
 				skip = conIn.nextLine();
 				switch (operation) {
 
@@ -97,7 +95,7 @@ public class Client {
 						flag = remcalendar.calendarExist(userName);
 						if (flag != true) {
 							flag = remcalendar.createCalendar(userName);
-							System.out.println(".........................................");
+							System.out.println("\n.........................................");
 							System.out.println("New calendar created for " + userName);
 							System.out.println(".........................................");
 						} else {
@@ -133,11 +131,11 @@ public class Client {
 
 							flag = remcalendar.addEvent(timeInterval, eventDescription, accessControl);
 							if (flag == true) {
-								System.out.println(".........................................");
+								System.out.println("\n.........................................");
 								System.out.println("Event posted.");
 								System.out.println(".........................................");
 							} else {
-								System.out.println("Post failed! ");
+								System.out.println("\n\nPost failed! ");
 							}
 						}
 						break;
@@ -148,7 +146,6 @@ public class Client {
 							System.out.println("Please create a calendar first \n"
 									+ "or select view calendars to select from existing calendars");
 						} else {
-
 							String result = remcalendar.viewAllCalendars();
 							System.out.println(result);
 
@@ -230,7 +227,8 @@ public class Client {
 							System.out.println("Enter username");
 							userName = conIn.nextLine();
 
-							remcalendar.viewAnyCalendar(userName, index);
+							result = remcalendar.viewAnyCalendar(userName, index);
+							System.out.println(result);
 						}
 						break;
 
