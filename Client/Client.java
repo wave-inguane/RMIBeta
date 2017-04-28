@@ -135,7 +135,7 @@ public class Client {
 								System.out.println("Event posted.");
 								System.out.println(".........................................");
 							} else {
-								System.out.println("\n\nPost failed! ");
+								System.out.println("\n\nPost failed! Time overlap!");
 							}
 						}
 						break;
@@ -233,7 +233,7 @@ public class Client {
 						break;
 
 					case 9:
-						System.out.println("Please  enter username: ");
+						System.out.println("Please enter username: ");
 						userName = conIn.nextLine();
 						flag = remcalendar.calendarExist(userName);
 						if (flag != true) {
