@@ -219,7 +219,7 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 
 
  public void updateEvent(List<String> newEvent, String userName, int eventNumber) throws RemoteException{
-       mapUpdate.put(userName + eventNumber, newEvent)
+       mapUpdate.put(userName + eventNumber, newEvent);
   }
 
 	public boolean createAnotherCalendar(String userName) throws RemoteException {
