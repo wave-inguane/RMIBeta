@@ -56,135 +56,6 @@ public class Client
 	    System.exit(1);
 	}
 
-<<<<<<< HEAD
-				skip = conIn.nextLine();
-				switch (operation) {
-					case 1:
-						flag = remcalendar.calendarExist(userName);
-						if (flag != true) {
-							flag = remcalendar.createCalendar(userName);
-							//       flag = true;
-							System.out.println("...................................");
-							System.out.println("New calendar created for " + userName);
-							System.out.println("...................................");
-						} else {
-							System.out.println("Username " + userName + " is already registered.");
-						}
-						break;
-
-					case 2:
-						flag = remcalendar.calendarExist(userName);
-						if (flag != true) {
-							System.out.println("Please create a calendar first \n"
-									+ "or select view calendars to select from existing calendars");
-						} else {
-							String result = remcalendar.viewCalendar(userName);
-							System.out.println(result);
-						}
-						break;
-
-					case 3:
-						flag = remcalendar.calendarExist(userName);
-						if (flag != true) {
-							System.out.println("Please create a calendar first \n"
-									+ "or select view calendars to select from existing calendars");
-						} else {
-							System.out.println("Enter event time: Ex: 9-10 or 17-18: ");
-							String timeInterval = conIn.nextLine();
-
-							System.out.println("Enter event description: Ex: Squash game with Mary ");
-							String eventDescription = conIn.nextLine();
-
-							System.out.println("Enter event access control: Ex: Private, Public, Group, and Open  ");
-							String accessControl = conIn.nextLine();
-
-							flag = remcalendar.addEvent(timeInterval, eventDescription, accessControl);
-							if (flag == true) {
-								System.out.println("...................................");
-								System.out.println("Event posted.");
-								System.out.println("...................................");
-							} else {
-								System.out.println("Time interval conflicts!");
-							}
-						}
-						break;
-
-					case 4:
-						flag = remcalendar.calendarExist(userName);
-						if (flag != true) {
-							System.out.println("Please create a calendar first \n"
-									+ "or select view calendars to select from existing calendars");
-						} else {
-							System.out.println("Enter calendarNumber");
-							int calendarNumber = conIn.nextInt();
-							skip = conIn.nextLine();
-
-							System.out.println("Enter username");
-							userName = conIn.nextLine();
-
-
-							System.out.println("Enter event number : Ex: 0, 1, 2 ... ");
-							int eventNumber = conIn.nextInt();
-							skip = conIn.nextLine();
-
-							if (remcalendar.isOwner(userName, calendarNumber) == true) {
-
-								System.out.println("Enter event time: Ex: 9-10 AM, April 20, 2017 ");
-								String timeInterval = conIn.nextLine();
-								System.out.println("Enter event description: Ex: Squash game with Mary ");
-								String eventDescription = conIn.nextLine();
-								System.out.println("Enter event access control: Ex: Private, Public, Group, and Open  ");
-								String accessControl = conIn.nextLine();
-
-								List<String> event = remcalendar.modifyEvent(eventNumber);
-								event.add(0, timeInterval);
-								event.add(1, eventDescription);
-								event.add(2, accessControl);
-
-								remcalendar.updateEvent(event);
-							} else {
-								System.out.println(" Access denied ");
-							}
-						}
-						break;
-
-					case 5:
-						flag = remcalendar.calendarExist(userName);
-						if (flag != true) {
-							System.out.println("Please create a calendar first \n"
-									+ "or select view calendars to select from existing calendars");
-						} else {
-							System.out.println("Enter calendarNumber");
-							int calendarNumber = conIn.nextInt();
-							skip = conIn.nextLine();
-
-							//System.out.println("Enter username");
-							//userName = conIn.nextLine();
-
-							if (remcalendar.isOwner(userName, calendarNumber) == true) {
-								System.out.println("Enter event number : Ex: 0, 1, 2 ... ");
-								int eventNumber = conIn.nextInt();
-								skip = conIn.nextLine();
-
-								List<String> event = remcalendar.modifyEvent(eventNumber);
-								event.add(0, "deleted");
-								event.add(1, "deleted");
-								event.add(2, "deleted");
-								System.out.println("...................................");
-								System.out.println(" Event deleted ");
-								System.out.println("...................................");
-							} else {
-								System.out.println(" Access denied ");
-							}
-						}
-						break;
-
-					case 6:
-						String result = remcalendar.viewAllCalendars();
-=======
-        // Send a messge to the remote object
-        
-        
 	try {
 	
 	    remcalendar.setUserName(userName);
@@ -395,7 +266,7 @@ public class Client
 		            if(flag==true){
 		            DEBUGGER
 		            	result = remcalendar.viewCalendar(userName);
->>>>>>> e3270a4e63c78cf1226c60a8a7c23a97d0e2035a
+
 						System.out.println(result);
 						remcalendar.setUserName(userName);
 						userName = remcalendar.getUserName();
