@@ -154,6 +154,7 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 				Entry<String, List<String>> entry = iterator.next();
 				String key = entry.getKey();
 				if (key.equalsIgnoreCase(userName + tuple)) {
+				// if(key.contains(userName)) {
 					List<String> event = entry.getValue();
 					sb.append(tuple + ":\t\t " + event.get(0) + "\t\t" + event.get(1) + "\t\t" + event.get(2) + "\n");
 				}
@@ -172,9 +173,6 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 	public List<String> modifyEvent(int eventNumber) throws RemoteException {
 		System.out.println("Server: Message > " + "modifyEvent() invoked");
 		List<String> event = null;
-
-		//String name =
-
 		if (calendars != null)
 			for (Iterator<Map.Entry<Integer, Map<String, List<String>>>> iterator = calendars.entrySet().iterator(); iterator.hasNext(); ) {
 				Entry<Integer, Map<String, List<String>>> entry = iterator.next();
@@ -212,28 +210,13 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 
 	public boolean createAnotherCalendar(String userName) throws RemoteException {
 		System.out.println("Server: Message > " + "createAnotherCalendar() invoked");
-
 		boolean flag = false;
 		if (calendarExist(userName) == true)
 			return false;
 		else {
-		
-	    /*
-		int j = 0;
-		Map<String, List<String>> map = calendars.get(j);
-		while (map != null) {
-			map = calendars.get(j);
-			j++;
-		}
-
-		new Calendar(userName);
-		index = prevIndex[0] + 1;
-		*/
-
 			flag = createCalendar(userName);
 		}
 		return flag;
-
 	}
 
 
@@ -248,7 +231,6 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 
 	public String viewAllCalendars() throws RemoteException {
 		System.out.println("Server: Message > " + "viewAllCalendars() invoked");
-
 		StringBuilder sb = new StringBuilder();
 		int i;
 		if (allcalendars != null) {
@@ -291,7 +273,6 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 			}
 		}
 		sb.append(".......................................................................\n");
-		sb.append(".......................................................................\n");
 		allCalendarsIndex++;
 		return sb.toString();
 	}
@@ -314,11 +295,14 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 			     allcalendars.get(index = index % users.size()).entrySet().iterator(); iterator.hasNext(); ) {
 				Entry<String, List<String>> entry = iterator.next();
 				List<String> event = entry.getValue();
-
-				if (isOwner(userName, index) == true)
-					sb.append(tuple + ": " + event.get(0) + "\t\t" + event.get(1) + "\t\t" + event.get(2));
-				else if (!event.get(2).equalsIgnoreCase("Private"))
-					sb.append(tuple + ": " + event.get(0) + "\t\t" + event.get(1) + "\t\t" + event.get(2));
+				sb.append(tuple + ": " + event.get(0) + "\t\t" + event.get(1) + "\t\t" + event.get(2));
+				// if (isOwner(userName, index) == true)
+				// 	sb.append(tuple + ": " + event.get(0) + "\t\t" + event.get(1) + "\t\t" + event.get(2));
+				// // else if (!event.get(2).equalsIgnoreCase("Private"))
+				// 	// sb.append(tuple + ": " + event.get(0) + "\t\t" + event.get(1) + "\t\t" + event.get(2));
+				// else {
+				// 	sb.append(tuple + ": " + event.get(0) + "\t\t" + event.get(1) + "\t\t" + event.get(2));
+				// }
 
 				sb.append("\n");
 				tuple++;
