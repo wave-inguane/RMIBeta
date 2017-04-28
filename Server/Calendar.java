@@ -321,7 +321,6 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 		return sb.toString();
 	}
 
-
 	public String EchoMessage() throws RemoteException {
 		String capitalizedMsg;
 		System.out.println("Server: EchoMessage() invoked...");

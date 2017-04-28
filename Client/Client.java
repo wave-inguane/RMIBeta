@@ -54,9 +54,7 @@ public class Client {
 
 		// Send a messge to the remote object
 
-
 		try {
-
 			remcalendar.setUserName(userName);
 			String userNameUpperCase = remcalendar.EchoMessage();
 
@@ -69,19 +67,8 @@ public class Client {
 			String skip;//skip end of line after reading an integer
 			boolean keepGoing; //flag for "choose operation" loop
 			int operation = 0; //indicates users choice of operation
-			//String userName = userName2;
-
-			//System.out.println("Calendar exist ? : "+ calendar);
-
-			//System.out.println("Server: work() invoked ");
-			//System.out.println("Client: " + userName );
-			//userName = conIn.nextLine();
-
-			//flag = remcalendar.createCalendar(userName);
-
 			keepGoing = true;
 			while (keepGoing) {
-
 				System.out.println("\nChoose a Task: ");
 				System.out.println("1: create calendar");
 				System.out.println("2: view calendar ");
@@ -93,6 +80,7 @@ public class Client {
 				System.out.println("8: view any calendar");
 				System.out.println("9: create another calendar ");
 				System.out.println("10: exit ");
+				System.out.println("11: switch users ");
 
 				if (conIn.hasNextInt())
 					operation = conIn.nextInt();
@@ -101,12 +89,10 @@ public class Client {
 					System.out.println("Error: you must enter an integer ");
 					System.out.println("Terminating the program... ");
 					System.out.println("................................ ");
-
 				}
 
 				skip = conIn.nextLine();
 				switch (operation) {
-
 					case 1:
 						flag = remcalendar.calendarExist(userName);
 						if (flag != true) {
@@ -262,8 +248,22 @@ public class Client {
 							System.out.println("Please provide different username.");
 						}
 						break;
+
 					case 10:
 						keepGoing = false;
+						break;
+
+					case 11:
+						System.out.println("Please enter a username you'd like to switch to: ");
+						userName = conIn.nextLine();
+						flag = remcalendar.calendarExist(userName);
+						if(!flag) {
+							System.out.println("There is no user with that name.");
+						} else {
+							remcalendar.setUserName(userName); 
+							System.out.println("Username is switched to " + remcalendar.getUserName());
+							
+						}
 						break;
 
 					default:
