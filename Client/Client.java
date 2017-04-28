@@ -68,14 +68,12 @@ public class Client {
 			keepGoing = true;
 			while (keepGoing) {
 				System.out.println("\nChoose a Task: ");
-				System.out.println("1: create calendar");
-				System.out.println("2: view calendar ");
-				System.out.println("3: post event ");
-				System.out.println("4: modify event ");
-				System.out.println("5: delete event ");
-				System.out.println("6: view calendars");
-				System.out.println("7: post in calendar number");
-				System.out.println("8: view any calendar");
+				System.out.println("1: create my calendar");
+				System.out.println("2: view my calendar ");
+				System.out.println("3: post my event ");
+				System.out.println("4: modify my event ");
+				System.out.println("5: delete my event ");
+				System.out.println("6: view all calendars");
 				System.out.println("9: create another calendar ");
 				System.out.println("10: exit ");
 				System.out.println("11: switch users ");
@@ -129,7 +127,7 @@ public class Client {
 							System.out.println("Enter event access control: Ex: Private, Public, Group, and Open  ");
 							String accessControl = conIn.nextLine();
 
-							flag = remcalendar.addEvent(timeInterval, eventDescription, accessControl);
+							flag = remcalendar.addEvent(userName, timeInterval, eventDescription, accessControl);
 							if (flag == true) {
 								System.out.println("\n.........................................");
 								System.out.println("Event posted.");
@@ -146,37 +144,32 @@ public class Client {
 							System.out.println("Please create a calendar first \n"
 									+ "or select view calendars to select from existing calendars");
 						} else {
-							String result = remcalendar.viewAllCalendars();
+							String result = remcalendar.viewCalendar(userName);
 							System.out.println(result);
-
-							System.out.println("Enter calendarNumber");
-							int calendarNumber = conIn.nextInt();
-							skip = conIn.nextLine();
-
-							System.out.println("Enter username");
-							userName = conIn.nextLine();
 
 							System.out.println("Enter event number : Ex: 0, 1, 2 ... ");
 							int eventNumber = conIn.nextInt();
 							skip = conIn.nextLine();
 
-							if (remcalendar.isOwner(userName, calendarNumber) == true) {
+							System.out.println("Enter event time: (Ex: 9-10 or 17-19)");
+							String timeInterval = conIn.nextLine();
 
-								System.out.println("Enter event time: (Ex: 9-10 or 17-19)");
-								String timeInterval = conIn.nextLine();
-								System.out.println("Enter event description: Ex: Squash game with Mary ");
-								String eventDescription = conIn.nextLine();
-								System.out.println("Enter event access control: Ex: Private, Public, Group, and Open  ");
-								String accessControl = conIn.nextLine();
+							System.out.println("Enter event description: Ex: Squash game with Mary");
+							String eventDescription = conIn.nextLine();
 
-								List<String> event = remcalendar.modifyEvent(eventNumber);
-								event.add(0, timeInterval);
-								event.add(1, eventDescription);
-								event.add(2, accessControl);
+							System.out.println("Enter event access control: Ex: Private, Public, Group, and Open");
+							String accessControl = conIn.nextLine();
 
-								remcalendar.updateEvent(event, userName, eventNumber);
+							ArrayList<String> event = remcalendar.modifyEvent(userName, eventNumber);
+							event.set(0, timeInterval);
+							event.set(1, eventDescription);
+							event.set(2, accessControl);
+
+							boolean isUpdated = remcalendar.updateEvent(event, userName, eventNumber);
+							if(isUpdated) {
+								System.out.println("\nThe event has been modified.\n");
 							} else {
-								System.out.println(" Access denied ");
+								System.out.println("\nCannot modify an event because of time overlap.\n");
 							}
 						}
 						break;
@@ -187,24 +180,17 @@ public class Client {
 							System.out.println("Please create a calendar first \n"
 									+ "or select view calendars to select from existing calendars");
 						} else {
-							System.out.println("Enter calendarNumber");
-							int calendarNumber = conIn.nextInt();
+							System.out.println(remcalendar.viewCalendar(userName));
+							System.out.println("\nEnter event number: ");
+							int eventNumber = conIn.nextInt();
 							skip = conIn.nextLine();
 
-							if (remcalendar.isOwner(userName, calendarNumber) == true) {
-								System.out.println("Enter event number : Ex: 0, 1, 2 ... ");
-								int eventNumber = conIn.nextInt();
-								skip = conIn.nextLine();
-
-								List<String> event = remcalendar.modifyEvent(eventNumber);
-								event.add(0, "deleted");
-								event.add(1, "deleted");
-								event.add(2, "deleted");
-								System.out.println(" ............................. ");
-								System.out.println(" Event deleted ");
-								System.out.println(" ............................. ");
+							System.out.println("USERNAME EXISTS? " + remcalendar.calendarExist(userName));
+							boolean isDeleted = remcalendar.deleteEvent(userName, eventNumber);
+							if(isDeleted) {
+								System.out.println("\nThe event has been deleted.\n");
 							} else {
-								System.out.println(" Access denied ");
+								System.out.println("\nFAILED TO DELETE THE EVENT\n");
 							}
 						}
 						break;
@@ -212,24 +198,6 @@ public class Client {
 					case 6:
 						String result = remcalendar.viewAllCalendars();
 						System.out.println(result);
-						break;
-
-					case 8:
-						flag = remcalendar.calendarExist(userName);
-						if (flag != true) {
-							System.out.println("Please create a calendar first \n"
-									+ "or select view calendars to select from existing calendars");
-						} else {
-							System.out.println("Please  enter calendar number ");
-							int index = conIn.nextInt();
-							skip = conIn.nextLine();
-
-							System.out.println("Enter username");
-							userName = conIn.nextLine();
-
-							result = remcalendar.viewAnyCalendar(userName, index);
-							System.out.println(result);
-						}
 						break;
 
 					case 9:
