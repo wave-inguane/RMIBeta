@@ -116,7 +116,7 @@ public class Client {
 							System.out.println("New calendar created for " + userName);
 							System.out.println("...................................");
 						} else {
-							System.out.println("This " + userName + " username already have a calendar. ");
+							System.out.println("Username " + userName + " is already registered.");
 						}
 						break;
 
