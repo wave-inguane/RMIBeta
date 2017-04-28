@@ -30,8 +30,8 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 	private Map<String, String> calendarExist = new LinkedHashMap<String, String>();
 	private int prevIndex[] = new int[1];
 
-  private Map<String, List<String>> map;
-  private List<String> updateEvent;
+  private Map<String, List<String>> mapUpdate;
+
 
 
 	public Calendar() throws RemoteException {
@@ -171,11 +171,12 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 							System.out.println(" MODIFIED EVENT ");
 							System.out.println("................ ");
 							System.out.println(key2+": "+event.get(0) +"\t\t"+ event.get(1) +"\t\t"+ event.get(2));
-               
-             //update the object
-						 //updateEvent = event;
-              //currentMap = map;
 
+              
+							//CRITICAL SECTION
+              //lock();
+         			   mapUpdate = map;
+              //unlock();
 						}
 					}
 				}
@@ -184,10 +185,9 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 	}
 
 
- //public void updateEvent(List<String> newEvent) throws RemoteException{
-  //   updateEvent = newEvent;
-    // currentMap.p
- // }
+ public void updateEvent(List<String> newEvent, String userName, int eventNumber) throws RemoteException{
+       mapUpdate.put(userName + eventNumber, newEvent)
+  }
 
 	public boolean createAnotherCalendar(String userName) throws RemoteException {
 	System.out.println("Server: Message > " + "createAnotherCalendar() invoked");

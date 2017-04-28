@@ -167,6 +167,10 @@ public class Client
 					System.out.println("Please create a calendar first \n"
 							+ "or select view calendars to select from existing calendars");
 				}else{
+					
+	        String result = remcalendar.viewAllCalendars();
+				  System.out.println(result);
+
 					System.out.println("Enter calendarNumber");
 					int calendarNumber = conIn.nextInt();
 					skip = conIn.nextLine();
@@ -193,7 +197,7 @@ public class Client
 						event.add(1, eventDescription);
 						event.add(2, accessControl);
 
-                                                remcalendar.updateEvent(event);
+           remcalendar.updateEvent(event,userName, eventNumber);
 					}else{
 						System.out.println(" Access denied ");
 					}
