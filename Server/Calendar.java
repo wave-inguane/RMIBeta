@@ -30,8 +30,8 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 	private Map<String, String> calendarExist = new LinkedHashMap<String, String>();
 	private int prevIndex[] = new int[1];
 
-	private Map<String, List<String>> map;
-	private List<String> updateEvent;
+  private Map<String, List<String>> mapUpdate;
+
 
 
 	public Calendar() throws RemoteException {
@@ -52,17 +52,17 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 	*/
 
 	public String getUserName() throws RemoteException {
-		System.out.println("Server: Message > " + "getUserName() invoked");
+	System.out.println("Server: Message > " + "getUserName() invoked");
 		return userName;
 	}
 
 	public void setUserName(String name) throws RemoteException {
-		System.out.println("Server: Message > " + "setUserName() invoked");
+	System.out.println("Server: Message > " + "setUserName() invoked");
 		userName = name;
 	}
 
 	public boolean calendarExist(String userName) throws RemoteException {
-		System.out.println("Server: Message > " + "calendarExist() invoked");
+	System.out.println("Server: Message > " + "calendarExist() invoked");
 		String exist = calendarExist.get(userName);
 		if (exist != null)
 			return true;
@@ -70,7 +70,7 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 	}
 
 	public boolean createCalendar(String userName) throws RemoteException {
-		System.out.println("Server: Message > " + "createCalendar() invoked");
+	System.out.println("Server: Message > " + "createCalendar() invoked");
 		if (calendarExist(userName) == false) {
 
 			indexKey = 0;
@@ -91,10 +91,7 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 	public boolean addEvent(String timeInterval,
 	                        String eventDescription,
 	                        String accessControl) throws RemoteException {
-		System.out.println("Server: Message > " + "addEvent() invoked");
-
-		// TODO check for conflits see specs
-		// If there is a conflit return false
+	                        System.out.println("Server: Message > " + "addEvent() invoked");
 
 		if(calendar != null) {
 			int tuple = 0;
@@ -157,7 +154,7 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 	
 
 	public String viewCalendar(String userName) throws RemoteException {
-		System.out.println("Server: Message > " + "viewCalendar() invoked");
+	System.out.println("Server: Message > " + "viewCalendar() invoked");
 		StringBuilder sb = new StringBuilder();
 		int tuple = 0;
 		sb.append("\t\t\t " + userName + "'s  CALENDAR \n");
@@ -179,13 +176,13 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 	}
 
 	public List<String> deleteEvent(int eventNumber) throws RemoteException {
-		System.out.println("Server: Message > " + "deleteEvent() invoked");
+	System.out.println("Server: Message > " + "deleteEvent() invoked");
 		return modifyEvent(eventNumber);
 	}
 
 
 	public List<String> modifyEvent(int eventNumber) throws RemoteException {
-		System.out.println("Server: Message > " + "modifyEvent() invoked");
+	System.out.println("Server: Message > " + "modifyEvent() invoked");
 		List<String> event = null;
 
 		//String name =
@@ -206,12 +203,13 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 							System.out.println("................ ");
 							System.out.println(" MODIFIED EVENT ");
 							System.out.println("................ ");
-							System.out.println(key2 + ": " + event.get(0) + "\t\t" + event.get(1) + "\t\t" + event.get(2));
+							System.out.println(key2+": "+event.get(0) +"\t\t"+ event.get(1) +"\t\t"+ event.get(2));
 
-							//update the object
-							//updateEvent = event;
-							//currentMap = map;
-
+              
+							//CRITICAL SECTION
+              //lock();
+         			   mapUpdate = map;
+              //unlock();
 						}
 					}
 				}
@@ -220,18 +218,17 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 	}
 
 
-	//public void updateEvent(List<String> newEvent) throws RemoteException{
-	//   updateEvent = newEvent;
-	// currentMap.p
-	// }
+ public void updateEvent(List<String> newEvent, String userName, int eventNumber) throws RemoteException{
+       mapUpdate.put(userName + eventNumber, newEvent)
+  }
 
 	public boolean createAnotherCalendar(String userName) throws RemoteException {
-		System.out.println("Server: Message > " + "createAnotherCalendar() invoked");
-
-		boolean flag = false;
-		if (calendarExist(userName) == true)
-			return false;
-		else {
+	System.out.println("Server: Message > " + "createAnotherCalendar() invoked");
+	
+	    boolean flag = false;
+		if (calendarExist(userName) == true) 
+		  return false;
+		  else{
 		
 	    /*
 		int j = 0;
@@ -244,16 +241,16 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 		new Calendar(userName);
 		index = prevIndex[0] + 1;
 		*/
-
-			flag = createCalendar(userName);
+		
+		flag = createCalendar(userName);
 		}
 		return flag;
-
+	
 	}
 
 
 	public boolean isOwner(String userName, int calendarNumber) throws RemoteException {
-		System.out.println("Server: Message > " + "isOwner() invoked");
+	System.out.println("Server: Message > " + "isOwner() invoked");
 		String name = users.get(calendarNumber);
 		if (name.equalsIgnoreCase(userName))
 			return true;
@@ -261,9 +258,10 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 	}
 
 
-	public String viewAllCalendars() throws RemoteException {
-		System.out.println("Server: Message > " + "viewAllCalendars() invoked");
 
+	public String viewAllCalendars() throws RemoteException {
+	System.out.println("Server: Message > " + "viewAllCalendars() invoked");
+	
 		StringBuilder sb = new StringBuilder();
 		int i;
 		if (allcalendars != null) {
@@ -275,11 +273,11 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 	}
 
 
-	/**
-	 * This should be private we have to remove from interface
-	 */
+   /**
+   * This should be private we have to remove from interface
+   */
 	public String viewAllCalendarsHelper(Map<String, List<String>> map) throws RemoteException {
-		System.out.println("Server: Message > " + "viewAllCalendarsHelper() invoked");
+	System.out.println("Server: Message > " + "viewAllCalendarsHelper() invoked");
 		StringBuilder sb = new StringBuilder();
 		int tuple = 0;
 		String name = users.get(allCalendarsIndex = allCalendarsIndex % users.size());
@@ -302,11 +300,11 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 				if (key.equalsIgnoreCase(name + tuple)) {
 					List<String> event = entry.getValue();
 					if (isOwner(userName, allCalendarsIndex) == true)
-						sb.append(tuple + ": " + event.get(0) + "\t\t" + event.get(1) + "\t\t" + event.get(2) + "\n");
+						sb.append(tuple + ": " + event.get(0) + "\t\t" + event.get(1) + "\t\t" + event.get(2)+"\n");
 						// System.out.println(tuple + ": " + event.get(0) + "\t\t" + event.get(1) + "\t\t" + event.get(2));
 					else if (!event.get(2).equalsIgnoreCase("Private"))
-						sb.append(tuple + ": " + event.get(0) + "\t\t" + event.get(1) + "\t\t" + event.get(2) + "\n");
-					// System.out.println(tuple + ": " + event.get(0) + "\t\t" + event.get(1) + "\t\t" + event.get(2));
+						sb.append(tuple + ": " + event.get(0) + "\t\t" + event.get(1) + "\t\t" + event.get(2)+"\n");
+						// System.out.println(tuple + ": " + event.get(0) + "\t\t" + event.get(1) + "\t\t" + event.get(2));
 				}
 				tuple++;
 			}
@@ -320,7 +318,7 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 	}
 
 	public String viewAnyCalendar(String userName, int index) throws RemoteException {
-		System.out.println("Server: Message > " + "viewAnyCalendar() invoked");
+	System.out.println("Server: Message > " + "viewAnyCalendar() invoked");
 		StringBuilder sb = new StringBuilder();
 		int tuple = 0;
 		String name = userName;
@@ -356,6 +354,7 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 
 		return sb.toString();
 	}
+
 
 	public String EchoMessage() throws RemoteException {
 		String capitalizedMsg;
