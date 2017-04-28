@@ -226,6 +226,7 @@ public class Client
 						event.add(0, "deleted");
 						event.add(1, "deleted");
 						event.add(2, "deleted");
+						remcalendar.updateEvent(event,userName,eventNumber);
 						System.out.println(" ............................. ");
 						System.out.println(" Event deleted ");
 						System.out.println(" ............................. ");
@@ -253,7 +254,8 @@ public class Client
 					System.out.println("Enter username");
 					userName = conIn.nextLine();
 
-					 remcalendar.viewAnyCalendar(userName, index);
+					result =  remcalendar.viewAnyCalendar(userName, index);
+					System.out.println(result);
 				}
 				break;
 
