@@ -123,7 +123,7 @@ public class Client {
 							System.out.println("Please create a calendar first \n"
 									+ "or select view calendars to select from existing calendars");
 						} else {
-							System.out.println("Enter event time: Ex: 9-10 AM, April 20, 2017 ");
+							System.out.println("Enter event time: Ex: 9-10 or 17-18: ");
 							String timeInterval = conIn.nextLine();
 
 							System.out.println("Enter event description: Ex: Squash game with Mary ");
@@ -138,7 +138,7 @@ public class Client {
 								System.out.println("Event posted.");
 								System.out.println("...................................");
 							} else {
-								System.out.println("Post failed! ");
+								System.out.println("Time interval conflicts!");
 							}
 						}
 						break;

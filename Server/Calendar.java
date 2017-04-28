@@ -93,23 +93,59 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 	                        String accessControl) throws RemoteException {
 		System.out.println("Server: Message > " + "addEvent() invoked");
 
-
 		// TODO check for conflits see specs
 		// If there is a conflit return false
 
+		if(calendar != null) {
+			int tuple = 0;
+			String[] currentTimeInterval = new String[2];
+			timeInterval = timeInterval.replaceAll(" ", "");
+			String[] newTimeInterval = timeInterval.split("-");
+			ArrayList<Integer> startTime = new ArrayList<Integer>();
+			ArrayList<Integer> endTime = new ArrayList<Integer>();
+
+			for(Iterator<Map.Entry<String, List<String>>> iterator = calendar.entrySet().iterator(); iterator.hasNext(); ) {
+				Entry<String, List<String>> entry = iterator.next();
+				String key = entry.getKey();
+				if (key.equalsIgnoreCase(userName + tuple)) {
+					List<String> event = entry.getValue();
+					currentTimeInterval = event.get(0).split("-");
+					startTime.add(Integer.parseInt(currentTimeInterval[0]));
+					endTime.add(Integer.parseInt(currentTimeInterval[1]));
+					/* String[] usersTimeInterval = event.get(0).split("-");
+					String[] newTimeInterval = timeInterval.split("-");
+
+					if((Integer.parseInt(newTimeInterval[0]) >= Integer.parseInt(usersTimeInterval[0]) &&
+						Integer.parseInt(newTimeInterval[1]) <= Integer.parseInt(usersTimeInterval[1])) ||
+						(Integer.parseInt(usersTimeInterval[0]) >= Integer.parseInt(newTimeInterval[0]) &&
+							Integer.parseInt(usersTimeInterval[1]) <= Integer.parseInt(newTimeInterval[1])))  {
+						return false;
+					}*/
+				}
+				tuple++;
+			}
+			if(!startTime.isEmpty()) {
+				for(int i = 0; i < startTime.size(); i++) {
+					for(int j = 0; j < endTime.size(); j++) {
+						if(Integer.parseInt(newTimeInterval[1]) >= startTime.get(i) &&
+							Integer.parseInt(newTimeInterval[0]) <= endTime.get(j)) {
+								return false;
+							}
+					}
+				}
+			}
+		} 
 		int j = 0;
 		tuple = new ArrayList<>();
 		tuple.add(0, timeInterval);
 		tuple.add(1, eventDescription);
 		tuple.add(2, accessControl);
-
 		try {
 			List<String> list = calendar.get(userName + j);
 			while (list != null) {
 				list = calendar.get(userName + j);
 				j++;
 			}
-
 			calendar.put(userName + indexKey, tuple);
 			indexKey++;
 		} catch (ClassCastException e) {
@@ -118,23 +154,23 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 		}
 		return true;
 	}
+	
 
 	public String viewCalendar(String userName) throws RemoteException {
 		System.out.println("Server: Message > " + "viewCalendar() invoked");
 		StringBuilder sb = new StringBuilder();
 		int tuple = 0;
 		sb.append("\t\t\t " + userName + "'s  CALENDAR \n");
-		sb.append("...............................................\n");
-		sb.append("EVENT# \t\t TIME \t\t EVENT \t\t ACCESS\n");
-		sb.append("...............................................\n");
+		sb.append("..................................................................\n");
+		sb.append("EVENT# \t\t TIME \t\t EVENT \t\t\t ACCESS\n");
+		sb.append("..................................................................\n");
 		if (calendar != null) {
 			for (Iterator<Map.Entry<String, List<String>>> iterator = calendar.entrySet().iterator(); iterator.hasNext(); ) {
 				Entry<String, List<String>> entry = iterator.next();
 				String key = entry.getKey();
-
 				if (key.equalsIgnoreCase(userName + tuple)) {
 					List<String> event = entry.getValue();
-					sb.append(tuple + ": " + event.get(0) + "\t\t" + event.get(1) + "\t\t" + event.get(2) + "\n");
+					sb.append(tuple + ":\t\t " + event.get(0) + "\t\t" + event.get(1) + "\t\t" + event.get(2) + "\n");
 				}
 				tuple++;
 			}
