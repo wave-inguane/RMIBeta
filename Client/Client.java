@@ -165,7 +165,7 @@ public class Client {
 
 							if (remcalendar.isOwner(userName, calendarNumber) == true) {
 
-								System.out.println("Enter event time: Ex: 9-10 AM, April 20, 2017 ");
+								System.out.println("Enter event time: (Ex: 9-10 or 17-19)");
 								String timeInterval = conIn.nextLine();
 								System.out.println("Enter event description: Ex: Squash game with Mary ");
 								String eventDescription = conIn.nextLine();
@@ -193,9 +193,6 @@ public class Client {
 							System.out.println("Enter calendarNumber");
 							int calendarNumber = conIn.nextInt();
 							skip = conIn.nextLine();
-
-							//System.out.println("Enter username");
-							//userName = conIn.nextLine();
 
 							if (remcalendar.isOwner(userName, calendarNumber) == true) {
 								System.out.println("Enter event number : Ex: 0, 1, 2 ... ");
