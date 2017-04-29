@@ -152,12 +152,10 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 					if (key.equalsIgnoreCase(userName)) {
 						ArrayList<Appointment> apptList = entry.getValue();
 						for(Appointment appointment: apptList) {
-							if(!appointment.getTime().equals("0")){
-								sb.append(String.valueOf(eventNumber++) + "\t\t" +
-									appointment.getTime() + "\t\t" + 
-									appointment.getDescription() + "\t\t" + 
-									appointment.getAccess() + "\n");
-							}
+							sb.append(String.valueOf(eventNumber++) + "\t\t" +
+								appointment.getTime() + "\t\t" + 
+								appointment.getDescription() + "\t\t" + 
+								appointment.getAccess() + "\n");
 						}
 					}
 				}
@@ -170,25 +168,40 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 		System.out.println("Server: Message > " + "deleteEvent() invoked");
 		int chosenEvent = 0;
 		if (userCalendar != null) {
-			for(int i = 0; i < allUserCalendars.size(); i++) {
-				Map<String, ArrayList<Appointment>> map = allUserCalendars.get(i);
-				for (Iterator<Map.Entry<String, ArrayList<Appointment>>> iterator = map.entrySet().iterator(); iterator.hasNext(); ) {
-					Entry<String, ArrayList<Appointment>> entry = iterator.next();
-					String key = entry.getKey();
-					if (key.equalsIgnoreCase(userName)) {
-						ArrayList<Appointment> apptList = entry.getValue();
-						for(Appointment appointment: apptList) {
-							if(chosenEvent == eventNumber) {
-								// appointment.setTime("0");
-								iterator.remove();
-								return true;
-							} else {
-								chosenEvent++;
-							}
+			for (Iterator<Map.Entry<String, ArrayList<Appointment>>> iterator = userCalendar.entrySet().iterator(); iterator.hasNext(); ) {
+				Entry<String, ArrayList<Appointment>> entry = iterator.next();
+				String key = entry.getKey();
+				if (key.equalsIgnoreCase(userName)) {
+					ArrayList<Appointment> apptList = entry.getValue();
+					for(Appointment appointment: apptList) {
+						if(chosenEvent == eventNumber) {
+							iterator.remove();
+							return true;
+						} else{
+							chosenEvent++;
 						}
 					}
 				}
 			}
+			// for(int i = 0; i < allUserCalendars.size(); i++) {
+			// 	Map<String, ArrayList<Appointment>> map = allUserCalendars.get(i);
+			// 	for (Iterator<Map.Entry<String, ArrayList<Appointment>>> iterator = map.entrySet().iterator(); iterator.hasNext(); ) {
+			// 		Entry<String, ArrayList<Appointment>> entry = iterator.next();
+			// 		String key = entry.getKey();
+			// 		if (key.equalsIgnoreCase(userName)) {
+			// 			ArrayList<Appointment> apptList = entry.getValue();
+			// 			for(Appointment appointment: apptList) {
+			// 				if(chosenEvent == eventNumber) {
+			// 					// appointment.setTime("0");
+			// 					iterator.remove();
+			// 					return true;
+			// 				} else {
+			// 					chosenEvent++;
+			// 				}
+			// 			}
+			// 		}
+			// 	}
+			// }
 		}
 		// for (Iterator<Map.Entry<String, ArrayList<Appointment>>> iterator = userCalendar.entrySet().iterator(); iterator.hasNext(); ) {
 		// 	Entry<String, ArrayList<Appointment>> entry = iterator.next();
@@ -349,12 +362,12 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 					int eventNumber = 0;
 					ArrayList<Appointment> apptList = entry.getValue();
 					for(Appointment appointment: apptList) {
-						if(!appointment.getTime().equals("0")) {
+						//if(!appointment.getTime().equals("0")) {
 							sb.append(String.valueOf(eventNumber++) + "\t\t" +
 									appointment.getTime() + "\t\t" + 
 									appointment.getDescription() + "\t\t" + 
 									appointment.getAccess() + "\n");
-						}
+						//}
 					}
 				} else {
 					int eventNumber = 0;
