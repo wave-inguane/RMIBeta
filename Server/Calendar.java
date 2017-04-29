@@ -20,6 +20,7 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 	private ArrayList<Map<String, ArrayList<Appointment>>> allUserCalendars = new ArrayList<>();
 	private ArrayList<String> names = new ArrayList<>();
 	private int userKeys = 0;
+	private int userIndex = 0;
 
 
 
@@ -178,7 +179,8 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 						ArrayList<Appointment> apptList = entry.getValue();
 						for(Appointment appointment: apptList) {
 							if(chosenEvent == eventNumber) {
-								appointment.setTime("0");
+								// appointment.setTime("0");
+								iterator.remove();
 								return true;
 							} else {
 								chosenEvent++;
