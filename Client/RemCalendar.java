@@ -13,11 +13,10 @@ import java.util.Scanner;
 import java.util.TreeMap;
 
 public interface RemCalendar extends Remote {
-	String EchoMessage() throws RemoteException;
 
-	public String getUserName() throws RemoteException;
+	public String getUserName() throws RemoteException, InterruptedException;
 
-	public void setUserName(String name) throws RemoteException;
+	public void setUserName(String name) throws RemoteException, InterruptedException;
 
 	public boolean calendarExist(String userName) throws RemoteException;
 

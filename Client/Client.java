@@ -24,7 +24,7 @@ public class Client {
 		// Validate command line parameters
 		if (argv.length < 1) {
 
-			System.out.println("Usage: java Client \"MESSAGE\"");
+			System.out.println("Usage: java Client \"username\"");
 			System.exit(1);
 		}
 
@@ -54,9 +54,10 @@ public class Client {
 
 		try {
 			remcalendar.setUserName(userName);
-			String userNameUpperCase = remcalendar.EchoMessage();
+			userName = remcalendar.getUserName();
+			
 
-			System.out.println("From Server: " + userNameUpperCase);
+			System.out.println("From Server: " + userName);
 
 			boolean flag = false;
 
@@ -105,7 +106,7 @@ public class Client {
 						flag = remcalendar.calendarExist(userName);
 						if (flag != true) {
 							System.out.println("Please create a calendar first \n"
-									+ "or select view calendars to select from existing calendars");
+									+ "or select view option 6: view all calendars");
 						} else {
 							String result = remcalendar.viewCalendar(userName);
 							System.out.println(result);
