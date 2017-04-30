@@ -17,7 +17,6 @@ import java.util.TreeMap;
 
 public class Calendar extends UnicastRemoteObject implements RemCalendar {
 	private Map<String, ArrayList<Appointment>> userCalendar  = new TreeMap(); // calendar for the current user
-	private ArrayList<Map<String, ArrayList<Appointment>>> allUserCalendars = new ArrayList<>();
 	private ArrayList<String> names = new ArrayList<>();
 	private String userName;
 
@@ -46,10 +45,8 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 	public boolean createCalendar(String userName) throws RemoteException {
 		System.out.println("Server: Message > " + "createCalendar() invoked");
 		if (!names.contains(userName)) {
-			// this.userCalendar = new TreeMap();
 			this.userName = userName;
 			this.userCalendar.put(this.userName, new ArrayList<>());
-			this.allUserCalendars.add(userCalendar);
 			this.names.add(userName);
 			return true;
 		}
