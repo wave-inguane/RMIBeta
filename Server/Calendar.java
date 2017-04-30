@@ -70,16 +70,6 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 			this.allUserCalendars.add(userCalendar);
 			this.names.add(userName);
 			this.userName = userName;
-
-			// indexKey = 0;
-			// this.userName = userName;
-			// users.add(userName);
-			// calendarExist.put(userName, "exist");
-			// calendar = new TreeMap<>();
-			// allcalendars.add(this.calendar);
-			// calendars.put(index, this.calendar);
-			// prevIndex[0] = index;
-			// index++;
 			return true;
 		}
 		return false;
@@ -141,7 +131,7 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 		StringBuilder sb = new StringBuilder();
 		sb.append("\t\t\t " + userName + "'s  CALENDAR \n");
 		sb.append("..................................................................\n");
-		sb.append("EVENT# \t\t TIME \t\t EVENT \t\t\t ACCESS\n");
+		sb.append("TIME \t\t EVENT \t\t\t ACCESS\n");
 		sb.append("..................................................................\n");
 		if (userCalendar != null) {
 			for (Iterator<Map.Entry<String, ArrayList<Appointment>>> iterator = userCalendar.entrySet().iterator(); iterator.hasNext(); ) {
@@ -150,8 +140,7 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 				if (key.equalsIgnoreCase(userName)) {
 					ArrayList<Appointment> apptList = entry.getValue();
 					for(Appointment appointment: apptList) {
-						sb.append(String.valueOf(eventNumber++) + "\t\t" +
-							appointment.getTime() + "\t\t" + 
+						sb.append(appointment.getTime() + "\t\t" + 
 							appointment.getDescription() + "\t\t" + 
 							appointment.getAccess() + "\n");
 					}
