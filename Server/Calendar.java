@@ -189,25 +189,6 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 				}
 			}
 		}
-		
-		// int chosenEvent = 0;
-		// if (userCalendar != null) {
-		// 	for (Iterator<Map.Entry<String, ArrayList<Appointment>>> iterator = userCalendar.entrySet().iterator(); iterator.hasNext(); ) {
-		// 		Entry<String, ArrayList<Appointment>> entry = iterator.next();
-		// 		String key = entry.getKey();
-		// 		if (key.equalsIgnoreCase(userName)) {
-		// 			ArrayList<Appointment> apptList = entry.getValue();
-		// 			for(Appointment appointment: apptList) {
-		// 				if(chosenEvent == eventNumber) {
-		// 					appointment.clear();
-		// 					return true;
-		// 				} else{
-		// 					chosenEvent++;
-		// 				}
-		// 			}
-		// 		}
-		// 	}
-		// }
 		return false;
 	}
 
