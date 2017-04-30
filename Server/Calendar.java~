@@ -186,7 +186,16 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 	         //        one at time by locking and unlocking it
 	         
 	         //iterate throught names (ArrayList)
-	         //you can use for loop to iterate
+	         //you can use for loop to iterate OR
+	         
+	          /*
+		      for (ListIterator<String> it = names.listIterator(list.size()); it.hasNext(); ) {
+		      String userName = it.next();
+		      // ...
+		          access (userName's calendar) look for open event
+		      }
+		      */
+	         
 	         //
 	         //lock()
 	         // if desired open event exist
