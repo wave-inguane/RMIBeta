@@ -144,42 +144,16 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 		sb.append("EVENT# \t\t TIME \t\t EVENT \t\t\t ACCESS\n");
 		sb.append("..................................................................\n");
 		if (userCalendar != null) {
-			for(int i = 0; i < allUserCalendars.size(); i++) {
-				Map<String, ArrayList<Appointment>> map = allUserCalendars.get(i);
-				for (Iterator<Map.Entry<String, ArrayList<Appointment>>> iterator = map.entrySet().iterator(); iterator.hasNext(); ) {
-					Entry<String, ArrayList<Appointment>> entry = iterator.next();
-					String key = entry.getKey();
-					if (key.equalsIgnoreCase(userName)) {
-						ArrayList<Appointment> apptList = entry.getValue();
-						for(Appointment appointment: apptList) {
-							sb.append(String.valueOf(eventNumber++) + "\t\t" +
-								appointment.getTime() + "\t\t" + 
-								appointment.getDescription() + "\t\t" + 
-								appointment.getAccess() + "\n");
-						}
-					}
-				}
-			}
-		}
-		return sb.toString();
-	}
-
-	public boolean deleteEvent(String userName, int eventNumber) throws RemoteException {
-		System.out.println("Server: Message > " + "deleteEvent() invoked");
-		int chosenEvent = 0;
-		if (userCalendar != null) {
 			for (Iterator<Map.Entry<String, ArrayList<Appointment>>> iterator = userCalendar.entrySet().iterator(); iterator.hasNext(); ) {
 				Entry<String, ArrayList<Appointment>> entry = iterator.next();
 				String key = entry.getKey();
 				if (key.equalsIgnoreCase(userName)) {
 					ArrayList<Appointment> apptList = entry.getValue();
 					for(Appointment appointment: apptList) {
-						if(chosenEvent == eventNumber) {
-							iterator.remove();
-							return true;
-						} else{
-							chosenEvent++;
-						}
+						sb.append(String.valueOf(eventNumber++) + "\t\t" +
+							appointment.getTime() + "\t\t" + 
+							appointment.getDescription() + "\t\t" + 
+							appointment.getAccess() + "\n");
 					}
 				}
 			}
@@ -191,29 +165,45 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 			// 		if (key.equalsIgnoreCase(userName)) {
 			// 			ArrayList<Appointment> apptList = entry.getValue();
 			// 			for(Appointment appointment: apptList) {
-			// 				if(chosenEvent == eventNumber) {
-			// 					// appointment.setTime("0");
-			// 					iterator.remove();
-			// 					return true;
-			// 				} else {
-			// 					chosenEvent++;
-			// 				}
+			// 				sb.append(String.valueOf(eventNumber++) + "\t\t" +
+			// 					appointment.getTime() + "\t\t" + 
+			// 					appointment.getDescription() + "\t\t" + 
+			// 					appointment.getAccess() + "\n");
 			// 			}
 			// 		}
 			// 	}
 			// }
 		}
-		// for (Iterator<Map.Entry<String, ArrayList<Appointment>>> iterator = userCalendar.entrySet().iterator(); iterator.hasNext(); ) {
-		// 	Entry<String, ArrayList<Appointment>> entry = iterator.next();
-		// 	String key = entry.getKey();
-		// 	if (key.equalsIgnoreCase(userName)) {
-		// 		ArrayList<Appointment> apptList = entry.getValue();
-		// 		for(Appointment appointment: apptList) {
-		// 			if(chosenEvent == eventNumber) {
-		// 				appointment.setTime("0");
-		// 				return true;
-		// 			} else {
-		// 				chosenEvent++;
+		return sb.toString();
+	}
+
+	public boolean deleteEvent(String userName, String eventTime) throws RemoteException {
+		System.out.println("Server: Message > " + "deleteEvent() invoked");
+		eventTime = eventTime.replaceAll(" ", "");
+		ArrayList<Appointment> list = userCalendar.get(userName);
+		if(list != null || !list.isEmpty()) {
+			for(Appointment appt: list) {
+				if(appt.getTime().equals(eventTime)) {
+					list.remove(appt);
+					return true;
+				}
+			}
+		}
+		
+		// int chosenEvent = 0;
+		// if (userCalendar != null) {
+		// 	for (Iterator<Map.Entry<String, ArrayList<Appointment>>> iterator = userCalendar.entrySet().iterator(); iterator.hasNext(); ) {
+		// 		Entry<String, ArrayList<Appointment>> entry = iterator.next();
+		// 		String key = entry.getKey();
+		// 		if (key.equalsIgnoreCase(userName)) {
+		// 			ArrayList<Appointment> apptList = entry.getValue();
+		// 			for(Appointment appointment: apptList) {
+		// 				if(chosenEvent == eventNumber) {
+		// 					appointment.clear();
+		// 					return true;
+		// 				} else{
+		// 					chosenEvent++;
+		// 				}
 		// 			}
 		// 		}
 		// 	}

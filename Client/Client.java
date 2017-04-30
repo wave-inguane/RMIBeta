@@ -181,16 +181,14 @@ public class Client {
 									+ "or select view calendars to select from existing calendars");
 						} else {
 							System.out.println(remcalendar.viewCalendar(userName));
-							System.out.println("\nEnter event number: ");
-							int eventNumber = conIn.nextInt();
-							skip = conIn.nextLine();
-
-							System.out.println("USERNAME EXISTS? " + remcalendar.calendarExist(userName));
-							boolean isDeleted = remcalendar.deleteEvent(userName, eventNumber);
+							System.out.println("\nEnter the time of the event you'd like to delete (e.g: 9-10 or 17-19): ");
+							String eventTime = conIn.nextLine();
+							boolean isDeleted = remcalendar.deleteEvent(userName, eventTime);
 							if(isDeleted) {
 								System.out.println("\nThe event has been deleted.\n");
 							} else {
-								System.out.println("\nFAILED TO DELETE THE EVENT\n");
+								System.out.println("\nThere is no current event with that time." +
+								 " Therefore, nothing has been deleted\n");
 							}
 						}
 						break;
