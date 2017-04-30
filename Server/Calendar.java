@@ -16,12 +16,10 @@ import java.util.Scanner;
 import java.util.TreeMap;
 
 public class Calendar extends UnicastRemoteObject implements RemCalendar {
-	private Map<String, ArrayList<Appointment>> userCalendar; // calendar for the current user
+	private Map<String, ArrayList<Appointment>> userCalendar  = new TreeMap(); // calendar for the current user
 	private ArrayList<Map<String, ArrayList<Appointment>>> allUserCalendars = new ArrayList<>();
 	private ArrayList<String> names = new ArrayList<>();
 	private String userName;
-	private int userKeys = 0;
-	private int userIndex = 0;
 
 	public Calendar() throws RemoteException {
 	}
@@ -33,7 +31,7 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 
 	public void setUserName(String name) throws RemoteException {
 		System.out.println("Server: Message > " + "setUserName() invoked");
-		userName = name;
+		this.userName = name;
 	}
 
 	public boolean calendarExist(String userName) throws RemoteException {
@@ -48,11 +46,11 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 	public boolean createCalendar(String userName) throws RemoteException {
 		System.out.println("Server: Message > " + "createCalendar() invoked");
 		if (!names.contains(userName)) {
-			this.userCalendar = new TreeMap();
-			this.userCalendar.put(userName, new ArrayList<>());
+			// this.userCalendar = new TreeMap();
+			this.userName = userName;
+			this.userCalendar.put(this.userName, new ArrayList<>());
 			this.allUserCalendars.add(userCalendar);
 			this.names.add(userName);
-			this.userName = userName;
 			return true;
 		}
 		return false;
@@ -114,35 +112,13 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 		sb.append("..................................................................\n");
 		sb.append("TIME \t\t EVENT \t\t\t ACCESS\n");
 		sb.append("..................................................................\n");
-		if (userCalendar != null) {
-			for (Iterator<Map.Entry<String, ArrayList<Appointment>>> iterator = userCalendar.entrySet().iterator(); iterator.hasNext(); ) {
-				Entry<String, ArrayList<Appointment>> entry = iterator.next();
-				String key = entry.getKey();
-				if (key.equalsIgnoreCase(userName)) {
-					ArrayList<Appointment> apptList = entry.getValue();
-					for(Appointment appointment: apptList) {
-						sb.append(appointment.getTime() + "\t\t" + 
-							appointment.getDescription() + "\t\t" + 
-							appointment.getAccess() + "\n");
-					}
-				}
+		if(names.contains(userName)) {
+			ArrayList<Appointment> list = userCalendar.get(userName);
+			for(Appointment appointment: list) {
+				sb.append(appointment.getTime() + "\t\t" + 
+					appointment.getDescription() + "\t\t" + 
+					appointment.getAccess() + "\n");
 			}
-			// for(int i = 0; i < allUserCalendars.size(); i++) {
-			// 	Map<String, ArrayList<Appointment>> map = allUserCalendars.get(i);
-			// 	for (Iterator<Map.Entry<String, ArrayList<Appointment>>> iterator = map.entrySet().iterator(); iterator.hasNext(); ) {
-			// 		Entry<String, ArrayList<Appointment>> entry = iterator.next();
-			// 		String key = entry.getKey();
-			// 		if (key.equalsIgnoreCase(userName)) {
-			// 			ArrayList<Appointment> apptList = entry.getValue();
-			// 			for(Appointment appointment: apptList) {
-			// 				sb.append(String.valueOf(eventNumber++) + "\t\t" +
-			// 					appointment.getTime() + "\t\t" + 
-			// 					appointment.getDescription() + "\t\t" + 
-			// 					appointment.getAccess() + "\n");
-			// 			}
-			// 		}
-			// 	}
-			// }
 		}
 		return sb.toString();
 	}
@@ -221,63 +197,34 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 	public String viewAllCalendars() throws RemoteException {
 		System.out.println("Server: Message > " + "viewAllCalendars() invoked");
 		StringBuilder sb = new StringBuilder();
-		int i;
-		if (allUserCalendars != null) {
-			for (i = 0; i < allUserCalendars.size(); i++) {
-				sb.append(viewAllCalendarsHelper(allUserCalendars.get(i)));
-			}
-		}
-		userKeys = 0;
-		return sb.toString();
-	}
-
-	public String viewAllCalendarsHelper(Map<String, ArrayList<Appointment>> map) throws RemoteException {
-		System.out.println("Server: Message > " + "viewAllCalendarsHelper() invoked");
-		StringBuilder sb = new StringBuilder();
-		for (Iterator<Map.Entry<String, ArrayList<Appointment>>> iterator = map.entrySet().iterator(); iterator.hasNext(); ) {
-			if(userKeys < names.size()) {
-				Entry<String, ArrayList<Appointment>> entry = iterator.next();
-				String name = entry.getKey();
-				sb.append("\t\t\t\t " + name + "'s  CALENDAR\n");
-				userKeys++;
-				break;
-			}
-		}
-		sb.append(".......................................................................\n");
-		sb.append("EVENT# \t\t TIME \t\t EVENT \t\t\t ACCESS\n");
-		sb.append(".......................................................................\n");
-		if (map != null) {
-			for (Iterator<Map.Entry<String, ArrayList<Appointment>>> iterator = map.entrySet().iterator(); iterator.hasNext(); ) {
-				Entry<String, ArrayList<Appointment>> entry = iterator.next();
-				String key = entry.getKey();
-				if (key.equalsIgnoreCase(userName)) {
-					int eventNumber = 0;
-					ArrayList<Appointment> apptList = entry.getValue();
+		if(!names.isEmpty()){
+			for(String name: userCalendar.keySet()) {
+				sb.append("\t\t\t " + name + "'s  CALENDAR\n");
+				sb.append(".......................................................................\n");
+				sb.append("TIME \t\t EVENT \t\t\t ACCESS\n");
+				sb.append(".......................................................................\n");
+				ArrayList<Appointment> list = userCalendar.get(name);
+				if (name.equalsIgnoreCase(userName)) {
+					ArrayList<Appointment> apptList = userCalendar.get(name);
 					for(Appointment appointment: apptList) {
-						//if(!appointment.getTime().equals("0")) {
-							sb.append(String.valueOf(eventNumber++) + "\t\t" +
-									appointment.getTime() + "\t\t" + 
-									appointment.getDescription() + "\t\t" + 
-									appointment.getAccess() + "\n");
-						//}
+						sb.append(appointment.getTime() + "\t\t" + 
+								appointment.getDescription() + "\t\t" + 
+								appointment.getAccess() + "\n");
 					}
 				} else {
-					int eventNumber = 0;
-					ArrayList<Appointment> apptList = entry.getValue();
+					ArrayList<Appointment> apptList = userCalendar.get(name);
 					for(Appointment appointment: apptList) {
 						if(!appointment.getAccess().equalsIgnoreCase("Private")) {
-							if(!appointment.getTime().equals("0")) {
-								sb.append(String.valueOf(eventNumber++) + "\t\t" +
-									appointment.getTime() + "\t\t" + 
-									appointment.getDescription() + "\t\t" + 
-									appointment.getAccess() + "\n");
-							}
+							sb.append(appointment.getTime() + "\t\t" + 
+								appointment.getDescription() + "\t\t" + 
+								appointment.getAccess() + "\n");
+							
 						}
 					}
 				}
+				sb.append(".......................................................................\n\n");
 			}
 		}
-		sb.append(".......................................................................\n\n");
 		return sb.toString();
 	}
 

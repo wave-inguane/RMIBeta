@@ -118,22 +118,52 @@ public class Client {
 							System.out.println("Please create a calendar first \n"
 									+ "or select view calendars to select from existing calendars");
 						} else {
+							boolean check = false;
 							System.out.println("Enter event time: (Ex: 9-10 or 17-19)");
 							String timeInterval = conIn.nextLine();
+							if(timeInterval.contains("-")) {
+								int count = 0;
+								for(int i = 0; i < timeInterval.length(); i++) {
+									if(timeInterval.charAt(i) == '-') {
+										count++;
+										if(count > 1) {
+											System.out.println("\nPlease make sure you correct entered numbers.\n");
+											check = true;
+											break;
+										}
+									} else if(!Character.isDigit(timeInterval.charAt(i))) {
+										System.out.println("\nPlease make sure you entered correct numbers.\n");
+										check = true;
+										break;
+									}
+								}
+							} else if(!timeInterval.contains("-")) {
+								System.out.println("\nPlease make sure you entered correct numbers.\n");
+								check = true;
+							} 
 
-							System.out.println("Enter event description: Ex: Squash game with Mary ");
-							String eventDescription = conIn.nextLine();
+							if(!check) {
+								timeInterval = timeInterval.replaceAll(" ", "");
+								String[] checkTime = timeInterval.split("-");
+								if(Integer.parseInt(checkTime[0]) > Integer.parseInt(checkTime[1])) {
+									System.out.println("\nWrong time entered! Please try again.\n");
+									break;
+								}
 
-							System.out.println("Enter event access control: Ex: Private, Public, Group, and Open  ");
-							String accessControl = conIn.nextLine();
+								System.out.println("Enter event description: Ex: Squash game with Mary ");
+								String eventDescription = conIn.nextLine();
 
-							flag = remcalendar.addEvent(userName, timeInterval, eventDescription, accessControl);
-							if (flag == true) {
-								System.out.println("\n.........................................");
-								System.out.println("Event posted.");
-								System.out.println(".........................................");
-							} else {
-								System.out.println("\n\nPost failed! Time overlap!");
+								System.out.println("Enter event access control: Ex: Private, Public, Group, and Open  ");
+								String accessControl = conIn.nextLine();
+
+								flag = remcalendar.addEvent(userName, timeInterval, eventDescription, accessControl);
+								if (flag == true) {
+									System.out.println("\n.........................................");
+									System.out.println("Event posted.");
+									System.out.println(".........................................");
+								} else {
+									System.out.println("\n\nPost failed! Time overlap!");
+								}
 							}
 						}
 						break;
