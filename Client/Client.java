@@ -147,12 +147,11 @@ public class Client {
 							String result = remcalendar.viewCalendar(userName);
 							System.out.println(result);
 
-							System.out.println("Enter event number : Ex: 0, 1, 2 ... ");
-							int eventNumber = conIn.nextInt();
-							skip = conIn.nextLine();
+							System.out.println("First, enter the event time you'd like to change: (Ex: 9-10 or 17-19)");
+							String pickedTime = conIn.nextLine();
 
-							System.out.println("Enter event time: (Ex: 9-10 or 17-19)");
-							String timeInterval = conIn.nextLine();
+							System.out.println("Now enter the time you'd like to change to: (Ex: 11-14 or 21-22)");
+							String modifiedTime = conIn.nextLine();
 
 							System.out.println("Enter event description: Ex: Squash game with Mary");
 							String eventDescription = conIn.nextLine();
@@ -160,16 +159,15 @@ public class Client {
 							System.out.println("Enter event access control: Ex: Private, Public, Group, and Open");
 							String accessControl = conIn.nextLine();
 
-							ArrayList<String> event = remcalendar.modifyEvent(userName, eventNumber);
-							event.set(0, timeInterval);
-							event.set(1, eventDescription);
-							event.set(2, accessControl);
-
-							boolean isUpdated = remcalendar.updateEvent(event, userName, eventNumber);
+							boolean isUpdated = remcalendar.updateEvent(userName, 
+																		pickedTime, 
+																		modifiedTime, 
+																		eventDescription, 
+																		accessControl);
 							if(isUpdated) {
 								System.out.println("\nThe event has been modified.\n");
 							} else {
-								System.out.println("\nCannot modify an event because of time overlap.\n");
+								System.out.println("\nCannot modify an event because of time overlap or the calendar is empty.\n");
 							}
 						}
 						break;

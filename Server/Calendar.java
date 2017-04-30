@@ -19,26 +19,9 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 	private Map<String, ArrayList<Appointment>> userCalendar; // calendar for the current user
 	private ArrayList<Map<String, ArrayList<Appointment>>> allUserCalendars = new ArrayList<>();
 	private ArrayList<String> names = new ArrayList<>();
+	private String userName;
 	private int userKeys = 0;
 	private int userIndex = 0;
-
-
-
-	private Map<String, List<String>> calendar;
-	private Map<Integer, Map<String, List<String>>>
-			calendars = new TreeMap<Integer, Map<String, List<String>>>();
-	private List<Map<String, List<String>>> allcalendars = new ArrayList<>();
-	private String userName;
-	private List<String> tuple;
-	private int index = 0;
-	private int indexKey;
-	private int allCalendarsIndex = 0;
-	private List<String> users = new ArrayList<String>();
-	private Map<String, String> calendarExist = new LinkedHashMap<String, String>();
-	private int prevIndex[] = new int[1];
-
-	private Map<String, List<String>> mapUpdate;
-
 
 	public Calendar() throws RemoteException {
 	}
@@ -64,7 +47,7 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 
 	public boolean createCalendar(String userName) throws RemoteException {
 		System.out.println("Server: Message > " + "createCalendar() invoked");
-		if (calendarExist(userName) == false) {
+		if (!names.contains(userName)) {
 			this.userCalendar = new TreeMap();
 			this.userCalendar.put(userName, new ArrayList<>());
 			this.allUserCalendars.add(userCalendar);
@@ -94,11 +77,9 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 				if (key.equalsIgnoreCase(userName)) {
 					ArrayList<Appointment> apptList = entry.getValue();
 					for(Appointment appointment: apptList) {
-						if(!appointment.getTime().equals("0")) {
-							currentTimeInterval = appointment.getTime().split("-");
-							startTime.add(Integer.parseInt(currentTimeInterval[0]));
-							endTime.add(Integer.parseInt(currentTimeInterval[1]));
-						}
+						currentTimeInterval = appointment.getTime().split("-");
+						startTime.add(Integer.parseInt(currentTimeInterval[0]));
+						endTime.add(Integer.parseInt(currentTimeInterval[1]));
 					}
 				}
 			}
@@ -181,82 +162,47 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 		return false;
 	}
 
-	public ArrayList<String> modifyEvent(String userName, int eventNumber) throws RemoteException {
-		System.out.println("Server: Message > " + "modifyEvent() invoked");
-		ArrayList<String> event = null;
-		if(userCalendar != null) {
-			int chosenEvent = 0;
-			for (Iterator<Map.Entry<String, ArrayList<Appointment>>> iterator = userCalendar.entrySet().iterator(); iterator.hasNext(); ) {
-				Entry<String, ArrayList<Appointment>> entry = iterator.next();
-				String key = entry.getKey();
-				if (key.equalsIgnoreCase(userName)) {
-					ArrayList<Appointment> apptList = entry.getValue();
-					for(Appointment appointment: apptList) {
-						if(chosenEvent == eventNumber) {
-							event = new ArrayList<>();
-							event.add(0, appointment.getTime());
-							event.add(1, appointment.getDescription());
-							event.add(2, appointment.getAccess());
-							return event;
-						} else{
-							chosenEvent++;
-						}
-					}
-				}
-			}
-		}
-		return event;
-	}
+	public boolean updateEvent(String userName, 
+							   String pickedTime, 
+							   String modifiedTime, 
+							   String eventDescription, 
+							   String accessControl) throws RemoteException {
+		if(userCalendar.get(userName) != null || userCalendar.get(userName).size() != 0) {
+			ArrayList<Appointment> list = userCalendar.get(userName);
+			for(Appointment appt: list) {
+				if(appt.getTime().equals(pickedTime.replaceAll(" ", ""))) {
+					String[] currentTimeInterval = new String[2];
+					modifiedTime = modifiedTime.replaceAll(" ", "");
+					String[] newTimeInterval = modifiedTime.split("-");
+					ArrayList<Integer> startTime = new ArrayList<Integer>();
+					ArrayList<Integer> endTime = new ArrayList<Integer>();
 
-
-	public boolean updateEvent(ArrayList<String> newEvent, String userName, int eventNumber) throws RemoteException {
-		int chosenEvent = 0;
-		for (Iterator<Map.Entry<String, ArrayList<Appointment>>> iterator = userCalendar.entrySet().iterator(); iterator.hasNext(); ) {
-			Entry<String, ArrayList<Appointment>> entry = iterator.next();
-			String key = entry.getKey();
-			if (key.equalsIgnoreCase(userName)) {
-				ArrayList<Appointment> apptList = entry.getValue();
-				for(Appointment appointment: apptList) {
-					if(chosenEvent == eventNumber) {
-						// Check for the time overlaps
-						String[] currentTimeInterval = new String[2];
-						String timeInterval = newEvent.get(0).replaceAll(" ", "");
-						String[] newTimeInterval = timeInterval.split("-");
-						ArrayList<Integer> startTime = new ArrayList<Integer>();
-						ArrayList<Integer> endTime = new ArrayList<Integer>();
-
-						chosenEvent = 0;
-						for (Iterator<Map.Entry<String, ArrayList<Appointment>>> iterator1 = userCalendar.entrySet().iterator(); iterator1.hasNext(); ) {
-							Entry<String, ArrayList<Appointment>> entry1 = iterator1.next();
-							String key1 = entry1.getKey();
-							if (key1.equalsIgnoreCase(userName)) {
-								ArrayList<Appointment> apptList1 = entry1.getValue();
-								for(Appointment appointment1: apptList1) {
-									if(chosenEvent != eventNumber) {
-										currentTimeInterval = appointment1.getTime().split("-");
-										startTime.add(Integer.parseInt(currentTimeInterval[0]));
-										endTime.add(Integer.parseInt(currentTimeInterval[1]));
-									} else {
-										chosenEvent++;
-									}
+					for (Iterator<Map.Entry<String, ArrayList<Appointment>>> iterator = userCalendar.entrySet().iterator(); iterator.hasNext(); ) {
+						Entry<String, ArrayList<Appointment>> entry = iterator.next();
+						String key = entry.getKey();
+						if (key.equalsIgnoreCase(userName)) {
+							ArrayList<Appointment> apptList = entry.getValue();
+							for(Appointment appointment: apptList) {
+								if(!appointment.getTime().equals(pickedTime.replaceAll(" ", ""))) {
+									currentTimeInterval = appointment.getTime().split("-");
+									startTime.add(Integer.parseInt(currentTimeInterval[0]));
+									endTime.add(Integer.parseInt(currentTimeInterval[1]));
 								}
 							}
 						}
-						if (!startTime.isEmpty()) {
-							for (int i = 0; i < startTime.size(); i++) {
-								if (Integer.parseInt(newTimeInterval[1]) >= startTime.get(i) &&
-										Integer.parseInt(newTimeInterval[0]) <= endTime.get(i)) {
-									return false;
-								}
+					}
+					if (!startTime.isEmpty()) {
+						for (int i = 0; i < startTime.size(); i++) {
+							if (Integer.parseInt(newTimeInterval[1]) >= startTime.get(i) &&
+									Integer.parseInt(newTimeInterval[0]) <= endTime.get(i)) {
+								return false;
 							}
 						}
-						appointment.setTime(newEvent.get(0));
-						appointment.setDescription(newEvent.get(1));
-						appointment.setAccess(newEvent.get(2));
-						return true;
-					} else{
-						chosenEvent++;
 					}
+					appt.setTime(modifiedTime.replaceAll(" ", ""));
+					appt.setDescription(eventDescription);
+					appt.setAccess(accessControl);
+					return true;
 				}
 			}
 		}
@@ -272,21 +218,11 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 		}
 	}
 
-
-	public boolean isOwner(String userName, int calendarNumber) throws RemoteException {
-		System.out.println("Server: Message > " + "isOwner() invoked");
-		String name = users.get(calendarNumber);
-		if (name.equalsIgnoreCase(userName))
-			return true;
-		return false;
-	}
-
-
 	public String viewAllCalendars() throws RemoteException {
 		System.out.println("Server: Message > " + "viewAllCalendars() invoked");
 		StringBuilder sb = new StringBuilder();
 		int i;
-		if (allcalendars != null) {
+		if (allUserCalendars != null) {
 			for (i = 0; i < allUserCalendars.size(); i++) {
 				sb.append(viewAllCalendarsHelper(allUserCalendars.get(i)));
 			}
@@ -295,10 +231,6 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 		return sb.toString();
 	}
 
-
-	/**
-	 * This should be private we have to remove from interface
-	 */
 	public String viewAllCalendarsHelper(Map<String, ArrayList<Appointment>> map) throws RemoteException {
 		System.out.println("Server: Message > " + "viewAllCalendarsHelper() invoked");
 		StringBuilder sb = new StringBuilder();
