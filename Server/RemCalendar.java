@@ -13,7 +13,7 @@ import java.util.Scanner;
 import java.util.TreeMap;
 
 public interface RemCalendar extends Remote {
-	
+
 	public String getUserName() throws RemoteException, InterruptedException;
 
 	public void setUserName(String name) throws RemoteException, InterruptedException;
@@ -33,9 +33,9 @@ public interface RemCalendar extends Remote {
 	public String viewAllCalendars() throws RemoteException;
 
 	public boolean updateEvent(String userName, String pickedTime, String modifiedTime, String eventDescription, String accessControl) throws RemoteException;
-	
-    public boolean addGroupEvent(String userName,
-							String timeInterval,
-	                        String eventDescription,
-	                        String accessControl) throws RemoteException ;
+
+	public boolean addGroupEvent(String userName,
+	                             String timeInterval,
+	                             String eventDescription,
+	                             String accessControl) throws RemoteException;
 }

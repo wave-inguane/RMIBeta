@@ -33,9 +33,9 @@ public interface RemCalendar extends Remote {
 	public String viewAllCalendars() throws RemoteException;
 
 	public boolean updateEvent(String userName, String pickedTime, String modifiedTime, String eventDescription, String accessControl) throws RemoteException;
-	
+
 	public boolean addGroupEvent(String userName,
-							String timeInterval,
-	                        String eventDescription,
-	                        String accessControl) throws RemoteException ;
+	                             String timeInterval,
+	                             String eventDescription,
+	                             String accessControl) throws RemoteException;
 }

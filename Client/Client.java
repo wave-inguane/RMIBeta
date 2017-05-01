@@ -55,7 +55,7 @@ public class Client {
 		try {
 			remcalendar.setUserName(userName);
 			userName = remcalendar.getUserName();
-			
+
 
 			System.out.println("From Server: " + userName);
 
@@ -122,31 +122,31 @@ public class Client {
 							boolean check = false;
 							System.out.println("Enter event time: (Ex: 9-10 or 17-19)");
 							String timeInterval = conIn.nextLine();
-							if(timeInterval.contains("-")) {
+							if (timeInterval.contains("-")) {
 								int count = 0;
-								for(int i = 0; i < timeInterval.length(); i++) {
-									if(timeInterval.charAt(i) == '-') {
+								for (int i = 0; i < timeInterval.length(); i++) {
+									if (timeInterval.charAt(i) == '-') {
 										count++;
-										if(count > 1) {
+										if (count > 1) {
 											System.out.println("\nPlease make sure you correct entered numbers.\n");
 											check = true;
 											break;
 										}
-									} else if(!Character.isDigit(timeInterval.charAt(i))) {
+									} else if (!Character.isDigit(timeInterval.charAt(i))) {
 										System.out.println("\nPlease make sure you entered correct numbers.\n");
 										check = true;
 										break;
 									}
 								}
-							} else if(!timeInterval.contains("-")) {
+							} else if (!timeInterval.contains("-")) {
 								System.out.println("\nPlease make sure you entered correct numbers.\n");
 								check = true;
-							} 
+							}
 
-							if(!check) {
+							if (!check) {
 								timeInterval = timeInterval.replaceAll(" ", "");
 								String[] checkTime = timeInterval.split("-");
-								if(Integer.parseInt(checkTime[0]) > Integer.parseInt(checkTime[1])) {
+								if (Integer.parseInt(checkTime[0]) > Integer.parseInt(checkTime[1])) {
 									System.out.println("\nWrong time entered! Please try again.\n");
 									break;
 								}
@@ -190,12 +190,12 @@ public class Client {
 							System.out.println("Enter event access control: Ex: Private, Public, Group, and Open");
 							String accessControl = conIn.nextLine();
 
-							boolean isUpdated = remcalendar.updateEvent(userName, 
-																		pickedTime, 
-																		modifiedTime, 
-																		eventDescription, 
-																		accessControl);
-							if(isUpdated) {
+							boolean isUpdated = remcalendar.updateEvent(userName,
+									pickedTime,
+									modifiedTime,
+									eventDescription,
+									accessControl);
+							if (isUpdated) {
 								System.out.println("\nThe event has been modified.\n");
 							} else {
 								System.out.println("\nCannot modify an event because of time overlap or the calendar is empty.\n");
@@ -213,11 +213,11 @@ public class Client {
 							System.out.println("\nEnter the time of the event you'd like to delete (e.g: 9-10 or 17-19): ");
 							String eventTime = conIn.nextLine();
 							boolean isDeleted = remcalendar.deleteEvent(userName, eventTime);
-							if(isDeleted) {
+							if (isDeleted) {
 								System.out.println("\nThe event has been deleted.\n");
 							} else {
 								System.out.println("\nThere is no current event with that time." +
-								 " Therefore, nothing has been deleted\n");
+										" Therefore, nothing has been deleted\n");
 							}
 						}
 						break;
