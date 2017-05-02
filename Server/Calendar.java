@@ -263,7 +263,7 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar{
 	  return flag;
 	}
 	
-	public String 
+
 	
 
     //read only
