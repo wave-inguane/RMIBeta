@@ -1,0 +1,4 @@
+interface ClientNotification extends Remote 
+{
+    public void notice() throws RemoteException;
+}
