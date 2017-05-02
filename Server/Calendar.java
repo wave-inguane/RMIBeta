@@ -30,7 +30,8 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 	private Map<String, ArrayList<Appointment>> userCalendar = new TreeMap(); // calendar for the current user
 	private ArrayList<String> names = new ArrayList<>();
 	private String userName;
-
+	// private Map<Integer, <Map<String, ArrayList<String>>> groupEvents = new TreeMap(); // String refers to the name that is inside a Group event, ArrayList is his times
+	private int groupEventIndex = 0;
 
 	public Calendar() throws RemoteException {
 		sentinel = -1;
@@ -100,14 +101,7 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 	public boolean createCalendar(String userName) throws RemoteException {
 		System.out.println("Server: Message > " + "createCalendar() invoked");
 		if (!names.contains(userName)) {
-			//this.userName = userName;
-			try {
-				setUserName(userName);
-				this.userName = getUserName();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-			this.userCalendar.put(this.userName, new ArrayList<Appointment>());
+			this.userCalendar.put(userName, new ArrayList<Appointment>());
 			this.names.add(userName);
 			return true;
 		}
@@ -177,6 +171,32 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 	                             String timeInterval,
 	                             String eventDescription,
 	                             String accessControl) throws RemoteException {
+		
+			// boolean isAdded = this.addEvent(String userName,
+	  //                            String timeInterval,
+	  //                            String eventDescription,
+	  //                            String accessControl);
+
+			// Loop through every calendar
+			// Add open slots into group event if applicable
+			for(Map.Entry<String, ArrayList<Appointment>> entry: userCalendar.entrySet()) {
+				String name = entry.getKey();
+				ArrayList<Appointment> appts = entry.getValue();
+				for(Appointment appointment: appts) {
+					if(appointment.getAccess().equals("Open")) {
+						String[] apptTime = appointment.getTime().split("-");
+						String[] groupTime = timeInterval.split("-");
+						if((Integer.parseInt(apptTime[0]) >= Integer.parseInt(groupTime[0]) &&
+							(Integer.parseInt(apptTime[0]) < Integer.parseInt(groupTime[1]))) &&
+							((Integer.parseInt(apptTime[1]) > Integer.parseInt(groupTime[0])) &&
+							(Integer.parseInt(apptTime[1]) <= Integer.parseInt(groupTime[1])))) {
+							
+							
+						}
+					}
+				}
+			}
+		// }
 
 		//STEP: 1 look for an open event in other users calendars
 		//        one at time by locking and unlocking it
@@ -210,13 +230,11 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 		//the server should send an notification that they were included in
 		//an group event and provide them with details
 		//Time and location should be fime
-
-
-		return false;
+		return true;
 	}
 
 
-	//read only
+	// Display the calendar for the current user
 	public String viewCalendar(String userName) throws RemoteException {
 		System.out.println("Server: Message > " + "viewCalendar() invoked");
 		int eventNumber = 0;
@@ -227,18 +245,40 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 		sb.append("..................................................................\n");
 		if (names.contains(userName)) {
 			ArrayList<Appointment> list = userCalendar.get(userName);
-			if (list != null)
+			if (list != null) {
 				for (Appointment appointment : list) {
 					sb.append(appointment.getTime() + "\t\t" +
-							appointment.getDescription() + "\t\t" +
-							appointment.getAccess() + "\n");
+						appointment.getDescription() + "\t\t" +
+						appointment.getAccess() + "\n");
+					// if(!appointment.getAccess().equals("Group")) {
+					// 	sb.append(appointment.getTime() + "\t\t" +
+					// 		appointment.getDescription() + "\t\t" +
+					// 		appointment.getAccess() + "\n");
+					// } else {
+					// 	sb.append(appointment.getTime() + "\t\t" +
+					// 		appointment.getDescription() + "\t\t" +
+					// 		appointment.getAccess() + ". Organizer: " + userName + ". Member(s) and their time: ");
+						// Map<String, ArrayList<String>> getMap = groupEvents.get(userName);
+						// for(Map.Entry<String, ArrayList<String>> map: getMap.entrySet()) {
+						// 	String memberName = map.getKey();
+						// 	sb.append(memberName + " (" + "");
+						// 	ArrayList<String> memberTimes = map.getValue();
+						// 	for(String time: memberTimes) {
+						// 		sb.append(time + "  ");
+						// 	}
+						// 	sb.append(")" + "");
+						// }
+						// sb.append("\n");
+					//}
 				}
+			}
 		}
 		sb.append("================================================================\n");
 		sb.append("\n");
 		return sb.toString();
 	}
 
+	// Delete event
 	public boolean deleteEvent(String userName, String eventTime) throws RemoteException {
 		System.out.println("Server: Message > " + "deleteEvent() invoked");
 		eventTime = eventTime.replaceAll(" ", "");
@@ -254,6 +294,7 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 		return false;
 	}
 
+	// Modify event
 	public boolean updateEvent(String userName,
 	                           String pickedTime,
 	                           String modifiedTime,
@@ -302,6 +343,7 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 		return false;
 	}
 
+	// Creates a calendar for another user
 	public boolean createAnotherCalendar(String userName) throws RemoteException {
 		System.out.println("Server: Message > " + "createAnotherCalendar() invoked");
 		if (calendarExist(userName))
@@ -311,7 +353,9 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 		}
 	}
 
-	public String viewAllCalendars() throws RemoteException {
+	//TODO add the username into the args of the method
+	// Displays all users' calendars
+	public String viewAllCalendars(String userName) throws RemoteException {
 		System.out.println("Server: Message > " + "viewAllCalendars() invoked");
 		StringBuilder sb = new StringBuilder();
 		if (!names.isEmpty()) {
@@ -325,17 +369,16 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 					ArrayList<Appointment> apptList = userCalendar.get(name);
 					for (Appointment appointment : apptList) {
 						sb.append(appointment.getTime() + "\t\t" +
-								appointment.getDescription() + "\t\t" +
-								appointment.getAccess() + "\n");
+							appointment.getDescription() + "\t\t" +
+							appointment.getAccess() + "\n");
 					}
 				} else {
 					ArrayList<Appointment> apptList = userCalendar.get(name);
 					for (Appointment appointment : apptList) {
 						if (!appointment.getAccess().equalsIgnoreCase("Private")) {
 							sb.append(appointment.getTime() + "\t\t" +
-									appointment.getDescription() + "\t\t" +
-									appointment.getAccess() + "\n");
-
+								appointment.getDescription() + "\t\t" +
+								appointment.getAccess() + "\n");
 						}
 					}
 				}
