@@ -187,7 +187,7 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 	            appointment.getAccess().equalsIgnoreCase("Open")) {
 	               	if(!sb.toString().contains(userName)) {
 	                	sb.append("" + userName + " " + addMe + " ");
-	                } else {
+	                } else if(!sb.toString().contains(addMe)) {
 	                	sb.append("" + addMe + " ");
 	                }
 	         }
