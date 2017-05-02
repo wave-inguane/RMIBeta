@@ -75,9 +75,11 @@ public class Client {
 				System.out.println("5: delete my event ");
 				System.out.println("6: view all calendars");
 				System.out.println("7: add group event ");
+				System.out.println("8: modify the group's event description and time ");
 				System.out.println("9: create another calendar ");
 				System.out.println("10: exit ");
 				System.out.println("11: switch users ");
+				System.out.println("12: remove myself from group event ");
 
 				if (conIn.hasNextInt())
 					operation = conIn.nextInt();
@@ -283,6 +285,25 @@ public class Client {
 						}
 						break;
 
+					case 8:
+						System.out.println("\nEnter the time of the Group event that you're in: ");
+						String groupTime = conIn.nextLine();
+						System.out.println("Now enter the time you would like to change the Group event time:");
+						String newGroupTime = conIn.nextLine();
+						System.out.println("And finally enter the new group event description:");
+						String newEventDescription = conIn.nextLine();
+
+						boolean isModified = remcalendar.modifyGroup(userName, groupTime, newGroupTime, newEventDescription);
+						if(isModified) {
+							System.out.println("\n\nThe group event has been modified");
+
+						} else {
+							System.out.println("\n\nFailed to modify because of the time overlaps with other group events or open intervals or wrong Group time was entered");
+							System.out.println("Members count: " + remcalendar.getMemberCount());
+							System.out.println("Open Interval count: " + remcalendar.getOpenIntervalsCheck());
+						}
+						break;
+
 					case 9:
 						System.out.println("Please enter username: ");
 						userName = conIn.nextLine();
@@ -313,6 +334,18 @@ public class Client {
 						}
 						break;
 
+					case 12:
+						System.out.println("\nEnter the time of the Group event that you're in: ");
+						groupTime = conIn.nextLine();
+
+						boolean isRemoved = remcalendar.removeMeFromGroup(userName, groupTime);
+						if(isRemoved) {
+							System.out.println("\n\nYou have been removed from group event");
+
+						} else {
+							System.out.println("\n\nFailed to remove because of the wrong entered time group");
+						}
+						break;
 					default:
 						System.out.println("Error in operation choice.");
 						break;

@@ -38,4 +38,15 @@ public interface RemCalendar extends Remote {
 	                             String timeInterval,
 	                             String eventDescription,
 	                             String accessControl) throws RemoteException;
+
+	public boolean modifyGroup(String userName,
+	                           String groupTime,
+	                           String newGroupTime,
+	                           String newEventDescription) throws RemoteException;
+
+	public boolean removeMeFromGroup(String userName, String groupTime) throws RemoteException;
+
+	public int getMemberCount() throws RemoteException;
+
+	public int getOpenIntervalsCheck() throws RemoteException;
 }

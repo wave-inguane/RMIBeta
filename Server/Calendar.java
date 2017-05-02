@@ -146,7 +146,6 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 		ArrayList<Appointment> getApptList = userCalendar.get(userName);
 		if (getApptList == null) {
 			getApptList = new ArrayList<>();
-			//this.userName = userName;
 			try {
 				setUserName(userName);
 				this.userName = getUserName();
@@ -162,76 +161,170 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 		return true;
 	}
 
-
-	/**
-	 * Don't worry about the locks i can add thenm later
-	 * you can just work on the functionality of the method
-	 */
 	public boolean addGroupEvent(String userName,
-	                             String timeInterval,
-	                             String eventDescription,
-	                             String accessControl) throws RemoteException {
-		
-			// boolean isAdded = this.addEvent(String userName,
-	  //                            String timeInterval,
-	  //                            String eventDescription,
-	  //                            String accessControl);
+                            String timeInterval,
+                            String eventDescription,
+                            String accessControl) throws RemoteException {
+             
+	  //STEP 1:
+	  boolean flag = false;     
+	  StringBuilder sb = new StringBuilder();
+	  sb.append(eventDescription + "\n \t\tMembers: ");
+	  
+	  //STEP 3: 
+	  int i = 0;
+	  String addMe;
+	  while(i < names.size()){
+	    ArrayList<Appointment> list = userCalendar.get(addMe = names.get(i++));
+	    
+	    for(Appointment appointment: list) {
+	    	String[] apptTime = appointment.getTime().split("-");
+	        String[] groupTime = timeInterval.split("-");
+	        if((Integer.parseInt(apptTime[0]) >= Integer.parseInt(groupTime[0]) &&
+	            (Integer.parseInt(apptTime[0]) < Integer.parseInt(groupTime[1]))) &&
+	            ((Integer.parseInt(apptTime[1]) > Integer.parseInt(groupTime[0])) &&
+	            (Integer.parseInt(apptTime[1]) <= Integer.parseInt(groupTime[1]))) && 
+	            appointment.getAccess().equalsIgnoreCase("Open")) {
+	               	if(!sb.toString().contains(userName)) {
+	                	sb.append("" + userName + " " + addMe + " ");
+	                } else {
+	                	sb.append("" + addMe + " ");
+	                }
+	         }
+	      }
+	  }
+	  // sb.append("\n");
+	  
+	  //STEP 4:
+	  boolean isGroup = false; 
+	  for(int j = 0; j < names.size(); j++) {
+	  	if(sb.toString().contains(names.get(j))) {
+	  		isGroup = true;
+	  		break;
+	  	}
+	  }
+	  if(isGroup) {
+	  	flag = addEvent(userName, timeInterval, sb.toString(), "Group");
+	  } else {
+	  	flag = addEvent(userName, timeInterval, sb.toString(), accessControl);
+	  }
+	  return flag;
+    }
+    public int memberCount = 0;
+    public int openIntervalsCheck = 0;
+    public int getMemberCount() {
+    	return memberCount;
+    }
+    public int getOpenIntervalsCheck() {
+    	return openIntervalsCheck;
+    }
+    // Modify the group event
+    public boolean modifyGroup(String userName, 
+    						   String groupTime, 
+    						   String newGroupTime, 
+    						   String newEventDescription) {
+    	memberCount = 0;
+    	openIntervalsCheck = 0;
+    	// Check for group time overlaps
+    	if(!names.isEmpty()) {
+			String[] currentTimeInterval = new String[2];
+			newGroupTime = newGroupTime.replaceAll(" ", "");
+			String[] newTimeInterval = newGroupTime.split("-");
+			ArrayList<Integer> startTime = new ArrayList<Integer>();
+			ArrayList<Integer> endTime = new ArrayList<Integer>();
 
-			// Loop through every calendar
-			// Add open slots into group event if applicable
-			for(Map.Entry<String, ArrayList<Appointment>> entry: userCalendar.entrySet()) {
-				String name = entry.getKey();
-				ArrayList<Appointment> appts = entry.getValue();
-				for(Appointment appointment: appts) {
-					if(appointment.getAccess().equals("Open")) {
-						String[] apptTime = appointment.getTime().split("-");
-						String[] groupTime = timeInterval.split("-");
-						if((Integer.parseInt(apptTime[0]) >= Integer.parseInt(groupTime[0]) &&
-							(Integer.parseInt(apptTime[0]) < Integer.parseInt(groupTime[1]))) &&
-							((Integer.parseInt(apptTime[1]) > Integer.parseInt(groupTime[0])) &&
-							(Integer.parseInt(apptTime[1]) <= Integer.parseInt(groupTime[1])))) {
-							
-							
-						}
+			for (Iterator<Map.Entry<String, ArrayList<Appointment>>> iterator = userCalendar.entrySet().iterator(); iterator.hasNext(); ) {
+				Entry<String, ArrayList<Appointment>> entry = iterator.next();
+				String key = entry.getKey();
+				ArrayList<Appointment> apptList = entry.getValue();
+				for (Appointment appointment : apptList) {
+					if(!appointment.getTime().equals(groupTime) && appointment.getAccess().equalsIgnoreCase("Group")) {
+						currentTimeInterval = appointment.getTime().split("-");
+						startTime.add(Integer.parseInt(currentTimeInterval[0]));
+						endTime.add(Integer.parseInt(currentTimeInterval[1]));
+
 					}
 				}
 			}
-		// }
+			if (!startTime.isEmpty()) {
+				for (int i = 0; i < startTime.size(); i++) {
+					if (Integer.parseInt(newTimeInterval[1]) >= startTime.get(i) &&
+							Integer.parseInt(newTimeInterval[0]) <= endTime.get(i)) {
+						return false;
+					}
+				}
+			}
+		}
 
-		//STEP: 1 look for an open event in other users calendars
-		//        one at time by locking and unlocking it
+    	int i = 0;
+    	String addMe;
+    	newEventDescription = newEventDescription + "\n \t\t Members:";
+    	while(i < names.size()){
+		    ArrayList<Appointment> list = userCalendar.get(addMe = names.get(i++));
+		      
+		    for(Appointment appointment: list) {
+		    	if(groupTime.equals(appointment.getTime()) && appointment.getAccess().equalsIgnoreCase("Group")) {
 
-		//iterate throught names (ArrayList)
-		//you can use for loop to iterate OR
+		    		// Get the number of participants in the group
+		    		for(int j = 0; j < names.size(); j++) {
+		    			if(appointment.getDescription().contains(names.get(j)) && !names.get(j).equals(userName)){
+		    				memberCount++;
+		    			}
+		    		}
+		    		// Check if there is an the newGroupTime contains all of the members open intervals
+		    		for(int j = 0; j < names.size(); j++) {
+		    			ArrayList<Appointment> l = userCalendar.get(names.get(j));
+		    			for(Appointment a: l) {
+		    				String[] apptTime = a.getTime().split("-");
+					        String[] groupEventTime = newGroupTime.split("-");
+					        if(((Integer.parseInt(apptTime[0]) >= Integer.parseInt(groupEventTime[0]) &&
+					            (Integer.parseInt(apptTime[0]) < Integer.parseInt(groupEventTime[1]))) &&
+					            ((Integer.parseInt(apptTime[1]) > Integer.parseInt(groupEventTime[0])) &&
+					            (Integer.parseInt(apptTime[1]) <= Integer.parseInt(groupEventTime[1])))) && 
+					            a.getAccess().equalsIgnoreCase("Open")) {
 
-	          /*
-		      for (ListIterator<String> it = names.listIterator(list.size()); it.hasNext(); ) {
-		      String userName = it.next();
-		      // ...
-		          access (userName's calendar) look for open event
-		      }
-		      */
+					        	openIntervalsCheck++;
+					        }
+		    			}
+		    		}
+		    		if(memberCount == openIntervalsCheck) {
+			    		for(int j = 0; j < names.size(); j++) {
+			    			if(appointment.getDescription().contains(names.get(j))){
+			    				newEventDescription += " " + names.get(j) + " ";
+			    			}
+			    		}
+			    		appointment.setDescription(newEventDescription);
+			    		appointment.setTime(newGroupTime);
+			    		return true;
+			    	} else {
+			    		return false;
+			    	}
+		    	}
+		 	}
+		}
+		return false;
+    }	
 
-		//
-		//lock()
-		// if desired open event exist
-		//        get name of the user
-		//        addEvent(String userName,String timeInterval,String eventDescription, String accessControl);
-		//unlock()
-		// this users calendar
-
-		//Next: on your iteration if more open events found
-		//Modify the group event on the group event host calendar
-		//       to append new group open event member
-
-		//and that's it
-
-		//For each calendar owner that was included on this group event
-		//the server should send an notification that they were included in
-		//an group event and provide them with details
-		//Time and location should be fime
-		return true;
-	}
+    public boolean removeMeFromGroup(String userName, String groupTime) {
+    	if(!names.isEmpty()) {
+    		for (Iterator<Map.Entry<String, ArrayList<Appointment>>> iterator = userCalendar.entrySet().iterator(); iterator.hasNext(); ) {
+				Entry<String, ArrayList<Appointment>> entry = iterator.next();
+				String key = entry.getKey();
+				ArrayList<Appointment> apptList = entry.getValue();
+				for (Appointment appointment : apptList) {
+					if(appointment.getTime().equals(groupTime) 
+						&& appointment.getAccess().equalsIgnoreCase("Group")
+						&& appointment.getDescription().contains(userName)) {
+						
+						String replaced = appointment.getDescription().replaceAll(userName, ""); // remove user from group event
+						appointment.setDescription(replaced);
+						return true;
+					}
+				}
+			}
+    	}
+    	return false;
+    }
 
 
 	// Display the calendar for the current user
@@ -249,27 +342,7 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 				for (Appointment appointment : list) {
 					sb.append(appointment.getTime() + "\t\t" +
 						appointment.getDescription() + "\t\t" +
-						appointment.getAccess() + "\n");
-					// if(!appointment.getAccess().equals("Group")) {
-					// 	sb.append(appointment.getTime() + "\t\t" +
-					// 		appointment.getDescription() + "\t\t" +
-					// 		appointment.getAccess() + "\n");
-					// } else {
-					// 	sb.append(appointment.getTime() + "\t\t" +
-					// 		appointment.getDescription() + "\t\t" +
-					// 		appointment.getAccess() + ". Organizer: " + userName + ". Member(s) and their time: ");
-						// Map<String, ArrayList<String>> getMap = groupEvents.get(userName);
-						// for(Map.Entry<String, ArrayList<String>> map: getMap.entrySet()) {
-						// 	String memberName = map.getKey();
-						// 	sb.append(memberName + " (" + "");
-						// 	ArrayList<String> memberTimes = map.getValue();
-						// 	for(String time: memberTimes) {
-						// 		sb.append(time + "  ");
-						// 	}
-						// 	sb.append(")" + "");
-						// }
-						// sb.append("\n");
-					//}
+						appointment.getAccess() + "\n\n");
 				}
 			}
 		}
@@ -370,7 +443,7 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 					for (Appointment appointment : apptList) {
 						sb.append(appointment.getTime() + "\t\t" +
 							appointment.getDescription() + "\t\t" +
-							appointment.getAccess() + "\n");
+							appointment.getAccess() + "\n\n");
 					}
 				} else {
 					ArrayList<Appointment> apptList = userCalendar.get(name);
@@ -378,7 +451,7 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 						if (!appointment.getAccess().equalsIgnoreCase("Private")) {
 							sb.append(appointment.getTime() + "\t\t" +
 								appointment.getDescription() + "\t\t" +
-								appointment.getAccess() + "\n");
+								appointment.getAccess() + "\n\n");
 						}
 					}
 				}
