@@ -36,16 +36,20 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar{
 	private ArrayList<RemCalendar> chatClients;
 	
 	private Map<String, ArrayList<Event>> userCalendar  = new TreeMap(); // calendar for the current user
+	private Map<String , Map<String, ArrayList<Event>>> createdBy = new TreeMap();
 	private ArrayList<String> names = new ArrayList<>();
 	private ArrayList<String> loggedIn;
+	private ArrayList<String> generalAccess;
+	private int ownerTracker;
 	
 	private String userName;
 	
-
+ 
 	public Calendar() throws RemoteException {
-		sentinel = -1;
-		chatClients = new ArrayList<RemCalendar>();
-		loggedIn = new ArrayList<>();
+		this.sentinel = -1;
+		this.ownerTracker = 0;
+		this.chatClients = new ArrayList<RemCalendar>();
+		this.loggedIn = new ArrayList<>();
 	}
 	
 
@@ -84,22 +88,7 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar{
 	  //Do Nothing
 	  //call client's retrieveMessage
 	}
-	
-	
-   /*
-	public String getUserName() throws RemoteException {
-		System.out.println("Server: Message > " + "getUserName() invoked");
-		return userName;
-	}
-	
 
-	public void setUserName(String name) throws RemoteException {
-		System.out.println("Server: Message > " + "setUserName() invoked");
-		this.userName = name;
-	}
-	*/
-	
-	
 	public void setUserName(String name) throws RemoteException, InterruptedException  {
 		System.out.println("Server: Message > " + "setUserName() invoked");
 	     lock.lock();
@@ -169,6 +158,7 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar{
 			  e.printStackTrace();
 			}
 			this.userCalendar.put(this.userName, new ArrayList<Event>());
+			this.createdBy.put(this.userName + ownerTracker++, this.userCalendar); 
 			this.names.add(userName);
 			return true;
 		}
@@ -403,21 +393,67 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar{
 		return sb.toString();
 	}
 	
-	
-	
-     public void viewOtherCalendar(String userName) throws RemoteException{
-	       //code
+     public String viewAnyCalendar(String name) throws RemoteException{
+    	 
+    	 if((isOwner(name) == true) && (userName.equals(name)))
+    		 return viewCalendar(userName);
+    	 else
+    	int eventNumber = 0;
+ 		StringBuilder sb = new StringBuilder();
+ 		sb.append("\t\t\t " + name + "'s  CALENDAR \n");
+ 		sb.append("..................................................................\n");
+ 		sb.append("TIME \t\t EVENT \t\t\t ACCESS\n");
+ 		sb.append("..................................................................\n");
+ 		if(names.contains( name )) {
+ 			ArrayList<Event> list = userCalendar.get(name);
+ 			if(list!=null)
+ 			for(Event event: list) {
+ 				if(!event.getAccess().equalsIgnoreCase("Private"))
+ 				sb.append(event.getTime() + "\t\t" + 
+ 					event.getDescription() + "\t\t" + 
+ 					event.getAccess() + "\n");
+ 			}
+ 		}
+ 		sb.append("================================================================\n");
+ 		sb.append("\n");
+ 		return sb.toString(); 
+    		 
 	 }
 	 
-	 
-    public boolean postInOtherCalendar(String userName)  throws RemoteException{
+     public boolean postInAnyCalendar(String name, String timeInterval,String eventDescription, String accessControl)  throws RemoteException{
+    	 
+    	 if((isOwner(name) == true) && (userName.equals(name)))
+    		 return addEvent(userName, timeInterval, eventDescription,accessControl);
+    		 
+          if(accessControl.equalsIgnoreCase("Group")){
+        	  //check for conflicting events
+    	    return addEvent(name, timeInterval, eventDescription,accessControl);
+          }
+    			 	 
       return false;
     }
     
-    public boolean isOwner(String userName)  throws RemoteException{
-         boolean flag = false;
-         
-    	return flag;
+    private boolean isOwner(String userName)  throws RemoteException{
+
+    	for (Iterator<Map.Entry<String, Map<String, ArrayList<Event>>>> iterator = createdBy.entrySet().iterator(); iterator.hasNext(); ) {
+			Entry<String, Map<String, ArrayList<String>>> entry = iterator.next();
+
+			String key = entry.getKey();
+			Map<String, ArrayList<Event>> calendar = entry.getValue();
+
+			if (calendar != null) {
+				for (Iterator<Map.Entry<String, ArrayList<Event>>> iterator2 = calendar.entrySet().iterator(); iterator2.hasNext(); ) {
+					Entry<String, ArrayList<String>> entry2 = iterator2.next();
+					String key2 = entry2.getKey();
+
+					if((key.substring(0,key2.length())).equals(key2)) { //is the owner
+						generalAccess  = entry2.getValue(); //return the calendar
+						return true;;
+					}
+				}
+			}
+		}
+    	return false;
 	}
 	
 	

@@ -50,10 +50,8 @@ public interface RemCalendar extends Remote {
       
     public boolean findClient(String client)throws RemoteException;  
     
-    public void viewOtherCalendar(String userName) throws RemoteException;   
+    public String viewAnyCalendar(String userName) throws RemoteException;   
     
-    public boolean postInOtherCalendar(String userName)  throws RemoteException;
-    
-    public boolean isOwner(String userName)  throws RemoteException;    
-	                            
+    public boolean postInAnyCalendar(String userName)  throws RemoteException;
+   	                            
 }

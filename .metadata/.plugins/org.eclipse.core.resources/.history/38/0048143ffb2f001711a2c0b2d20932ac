@@ -1,0 +1,17 @@
+package testing;
+
+public class Strings {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		
+	 String name = "Wave";
+	 String nameKey = "Wave1";
+	 
+	 if((nameKey.substring(1, name.lastIndexOf(name)).equals(name)))
+      System.out.println(name);
+	 else
+		 System.out.println("notOwner");
+	}
+
+}
