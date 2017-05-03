@@ -22,7 +22,8 @@ public interface RemCalendar extends Remote {
 
 	public boolean createCalendar(String userName) throws RemoteException;
 
-	public boolean addEvent(String userName, String timeInterval, String eventDescription, String accessControl) throws RemoteException;
+	public boolean addEvent(String userName, String timeInterval, String eventDescription, String accessControl)
+			throws RemoteException;
 
 	public String viewCalendar(String userName) throws RemoteException;
 
@@ -48,7 +49,9 @@ public interface RemCalendar extends Remote {
       
     public boolean findClient(String client)throws RemoteException;  
     
-    public void viewOtherCalendar(String userName) throws RemoteException;    
+    public void viewOtherCalendar(String userName) throws RemoteException;  
+    
+    public boolean postInOtherCalendar(String userName)  throws RemoteException; 
     
     public boolean isOwner(String userName)  throws RemoteException;                     
 }

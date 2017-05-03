@@ -60,12 +60,11 @@ public class Client extends UnicastRemoteObject implements RemCalendar{
 	}
 	
 	
-	public void registerChatClient(RemCalendar chatClient) throws RemoteException{
+	public void registerChatClient(RemCalendar chatClient) throws RemoteException {
+		
 	//Do Nothing
 	//The server takes care of registering the clients
 	}
-
-    //End New code
 
 	public static void main(String argv[]) {
 		// Validate command line parameters
