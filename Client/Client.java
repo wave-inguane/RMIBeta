@@ -450,6 +450,10 @@ public class Client extends UnicastRemoteObject implements RemCalendar{
 	 public void viewOtherCalendar(String userName) throws RemoteException{
 	       remcalendar.viewOtherCalendar(userName);
 	 }
+	 
+	public boolean postInOtherCalendar(String userName)  throws RemoteException{
+	  return  remcalendar.postInOtherCalendar(userName) ;
+	}
     
     public boolean isOwner(String userName)  throws RemoteException{
     	return remcalendar.isOwner(userName);

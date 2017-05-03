@@ -406,12 +406,19 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar{
 	
 	
      public void viewOtherCalendar(String userName) throws RemoteException{
-	       
+	       //code
 	 }
+	 
+	 
+    public boolean postInOtherCalendar(String userName)  throws RemoteException{
+      return false;
+    }
     
     public boolean isOwner(String userName)  throws RemoteException{
          boolean flag = false;
          
     	return flag;
 	}
+	
+	
 }
