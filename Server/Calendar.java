@@ -395,9 +395,10 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar{
 	
      public String viewAnyCalendar(String name) throws RemoteException{
 
-    	 if((isOwner(name) == true) && (userName.equals(name)))
-    		 return viewCalendar(userName);
-    	 else
+    	 if((isOwner(name) == true) && (userName.equals(name))){
+    		String result = viewCalendar(userName);
+    		 return result;
+    	 }else{
     	
  		StringBuilder sb = new StringBuilder();
  		sb.append("\t\t\t " + name + "'s  CALENDAR \n");
@@ -416,8 +417,9 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar{
  		}
  		sb.append("================================================================\n");
  		sb.append("\n");
- 		return sb.toString(); 
-    		 
+    	 }
+    	 
+ 		return sb.toString(); 	 
 	 }
 	 
      public boolean postInAnyCalendar(String name, String timeInterval,String eventDescription, String accessControl)  throws RemoteException{
