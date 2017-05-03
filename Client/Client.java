@@ -32,19 +32,19 @@ public class Client extends UnicastRemoteObject implements RemCalendar {
 	protected Client(String chatClientName, RemCalendar chatServer) throws RemoteException {
 		this.chatClientName = chatClientName;
 		this.chatServer = chatServer;
-		//register those who have been included in the group event
+		// Register those objects who have been included in the group event
 		chatServer.registerChatClient(this);
 	}
 
 	public static void main(String argv[]) {
 		// Validate command line parameters
+		// The args should have a name
 		if (argv.length < 1) {
-
 			System.out.println("Usage: java Client \"username\"");
 			System.exit(1);
 		}
 
-		String userName = argv[0];
+		String userName = argv[0]; // assign the userName that came from cmd
 
 
 		// Get a remote reference to the Calendar class
@@ -53,39 +53,41 @@ public class Client extends UnicastRemoteObject implements RemCalendar {
 		System.out.println("Client: Looking up " + strName + "...");
 
 		try {
-
+			// Try lookup of the rmi://localhost/CalendarServices
 			remcalendar = (RemCalendar) Naming.lookup(strName);
 			chatServer = remcalendar;
 
 		} catch (Exception e) {
-
+			// Throw exception if not found
 			System.out.println("Client: Exception thrown looking up " + strName);
 			System.exit(1);
 		}
 
 		try {
-
+			// check if the client is alreayd logged in
 			if (remcalendar.findClient(userName)) {
 				System.out.println("\n----------------------------------------------------");
 				System.err.println("Error: The Client is already logged in");
 				System.out.println("--------------------------------------------------- \n");
 				Runtime.getRuntime().exit(1);
 			} else
-				remcalendar.setUserName(userName);
+				remcalendar.setUserName(userName); // set the username 
 			userName = remcalendar.getUserName();
-			//register client
+			// Register a client
 			Client client = new Client(userName, chatServer);
 
 			System.out.println("From Server: " + userName);
 
 			boolean flag = false;
 
-			Scanner conIn = new Scanner(System.in);
+			Scanner conIn = new Scanner(System.in); // user Scanner to get the user input
 			String choice = null;
 			String skip;//skip end of line after reading an integer
 			boolean keepGoing; //flag for "choose operation" loop
 			int operation = 0; //indicates users choice of operation
 			keepGoing = true;
+
+			// Display the menu and operate on the user choic option
 			while (keepGoing) {
 				System.out.println("\nChoose a Task: ");
 				System.out.println("1: create my calendar");
@@ -101,6 +103,7 @@ public class Client extends UnicastRemoteObject implements RemCalendar {
 				System.out.println("13:  postInAnyCalendar");
 				System.out.println("14: exit ");
 
+				// Pick the entered operation
 				if (conIn.hasNextInt())
 					operation = conIn.nextInt();
 				else {
@@ -113,9 +116,9 @@ public class Client extends UnicastRemoteObject implements RemCalendar {
 				switch (operation) {
 
 					case 1:
-						flag = remcalendar.calendarExist(userName);
+						flag = remcalendar.calendarExist(userName); // check if the calendar exists
 						if (flag != true) {
-							flag = remcalendar.createCalendar(userName);
+							flag = remcalendar.createCalendar(userName); // if doesnt exits, then create a userName's calendar
 							System.out.println("\n.........................................");
 							System.out.println("New calendar created for " + userName);
 							System.out.println(".........................................");
@@ -126,18 +129,18 @@ public class Client extends UnicastRemoteObject implements RemCalendar {
 						break;
 
 					case 2:
-						flag = remcalendar.calendarExist(userName);
+						flag = remcalendar.calendarExist(userName); // check if the calendar exists
 						if (flag != true) {
 							System.out.println("Please create a calendar first \n"
 									+ "or select view option 6: view all calendars");
 						} else {
-							String result = remcalendar.viewCalendar(userName);
+							String result = remcalendar.viewCalendar(userName); // display the calendar events for userName
 							System.out.println(result);
 						}
 						break;
 
 					case 3:
-						flag = remcalendar.calendarExist(userName);
+						flag = remcalendar.calendarExist(userName); // check if the calendar exists
 						if (flag != true) {
 							System.out.println("Please create a calendar first \n"
 									+ "or select view calendars to select from existing calendars");
@@ -145,11 +148,14 @@ public class Client extends UnicastRemoteObject implements RemCalendar {
 							boolean check = false;
 							System.out.println("Enter event time: (Ex: 9-10 or 17-19)");
 							String timeInterval = conIn.nextLine();
+							// Test if the entered value are correct
+							// Test if the time interval contains dash
 							if (timeInterval.contains("-")) {
 								int count = 0;
 								for (int i = 0; i < timeInterval.length(); i++) {
 									if (timeInterval.charAt(i) == '-') {
 										count++;
+										// Make sure there is only one dash
 										if (count > 1) {
 											System.out.println("\nPlease make sure you correct entered numbers.\n");
 											check = true;
@@ -166,6 +172,7 @@ public class Client extends UnicastRemoteObject implements RemCalendar {
 								check = true;
 							}
 
+							// Now check if the time interval is intered in the form of Integer
 							if (!check) {
 								timeInterval = timeInterval.replaceAll(" ", "");
 								String[] checkTime = timeInterval.split("-");
@@ -180,6 +187,7 @@ public class Client extends UnicastRemoteObject implements RemCalendar {
 								System.out.println("Enter event access control: Ex: Private, Public, Group, and Open  ");
 								String accessControl = conIn.nextLine();
 
+								// Add event into userName's calendar
 								flag = remcalendar.addEvent(userName, timeInterval, eventDescription, accessControl);
 								if (flag == true) {
 									System.out.println("\n.........................................");
@@ -205,7 +213,7 @@ public class Client extends UnicastRemoteObject implements RemCalendar {
 						break;
 
 					case 4:
-						flag = remcalendar.calendarExist(userName);
+						flag = remcalendar.calendarExist(userName); // check if the calendar exists
 						if (flag != true) {
 							System.out.println("Please create a calendar first \n"
 									+ "or select view calendars to select from existing calendars");
@@ -225,6 +233,7 @@ public class Client extends UnicastRemoteObject implements RemCalendar {
 							System.out.println("Enter event access control: Ex: Private, Public, Group, and Open");
 							String accessControl = conIn.nextLine();
 
+							// Update/modify the userName's event; but it makes sure there is no overlaps
 							boolean isUpdated = remcalendar.updateEvent(userName,
 									pickedTime,
 									modifiedTime,
@@ -239,7 +248,7 @@ public class Client extends UnicastRemoteObject implements RemCalendar {
 						break;
 
 					case 5:
-						flag = remcalendar.calendarExist(userName);
+						flag = remcalendar.calendarExist(userName);// check if the calendar exists
 						if (flag != true) {
 							System.out.println("Please create a calendar first \n"
 									+ "or select view calendars to select from existing calendars");
@@ -247,6 +256,7 @@ public class Client extends UnicastRemoteObject implements RemCalendar {
 							System.out.println(remcalendar.viewCalendar(userName));
 							System.out.println("\nEnter the time of the event you'd like to delete (e.g: 9-10 or 17-19): ");
 							String eventTime = conIn.nextLine();
+							// Delete an event from userName's calendar
 							boolean isDeleted = remcalendar.deleteEvent(userName, eventTime);
 							if (isDeleted) {
 								System.out.println("\nThe event has been deleted.\n");
@@ -263,7 +273,7 @@ public class Client extends UnicastRemoteObject implements RemCalendar {
 						System.out.println(result);
 						break;
 					case 7:
-						flag = remcalendar.calendarExist(userName);
+						flag = remcalendar.calendarExist(userName); // check if the calendar exists
 						if (flag != true) {
 							System.out.println("Please create a calendar first \n"
 									+ "or select view calendars to select from existing calendars");
@@ -271,6 +281,7 @@ public class Client extends UnicastRemoteObject implements RemCalendar {
 							boolean check = false;
 							System.out.println("Enter event time: (Ex: 9-10 or 17-19)");
 							String timeInterval = conIn.nextLine();
+							// Test the input for correctness
 							if (timeInterval.contains("-")) {
 								int count = 0;
 								for (int i = 0; i < timeInterval.length(); i++) {
@@ -292,6 +303,7 @@ public class Client extends UnicastRemoteObject implements RemCalendar {
 								check = true;
 							}
 
+							// Check if the entered time interval contains correct digits
 							if (!check) {
 								timeInterval = timeInterval.replaceAll(" ", "");
 								String[] checkTime = timeInterval.split("-");
@@ -320,7 +332,7 @@ public class Client extends UnicastRemoteObject implements RemCalendar {
 					case 9:
 						System.out.println("Please enter username: ");
 						userName = conIn.nextLine();
-						flag = remcalendar.calendarExist(userName);
+						flag = remcalendar.calendarExist(userName); // check if the calendar exists
 						if (flag != true) {
 							flag = remcalendar.createAnotherCalendar(userName);
 							System.out.println("...................................");
@@ -343,7 +355,7 @@ public class Client extends UnicastRemoteObject implements RemCalendar {
 					case 11:
 						System.out.println("Please enter a username you'd like to switch to: ");
 						userName = conIn.nextLine();
-						flag = remcalendar.calendarExist(userName);
+						flag = remcalendar.calendarExist(userName); // check if the calendar exists
 						if (!flag) {
 							System.out.println("There is no user with that name.");
 						} else {
@@ -364,6 +376,7 @@ public class Client extends UnicastRemoteObject implements RemCalendar {
 							boolean check = false;
 							System.out.println("Enter event time: (Ex: 9-10 or 17-19)");
 							String timeInterval = conIn.nextLine();
+							// Test the input for correctness
 							if (timeInterval.contains("-")) {
 								int count = 0;
 								for (int i = 0; i < timeInterval.length(); i++) {
@@ -385,6 +398,7 @@ public class Client extends UnicastRemoteObject implements RemCalendar {
 								check = true;
 							}
 
+							// Check if the input contains integers in a correct format
 							if (!check) {
 								timeInterval = timeInterval.replaceAll(" ", "");
 								String[] checkTime = timeInterval.split("-");
