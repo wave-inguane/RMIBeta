@@ -52,6 +52,6 @@ public interface RemCalendar extends Remote {
     
     public String viewAnyCalendar(String userName) throws RemoteException;   
     
-    public boolean postInAnyCalendar(String userName)  throws RemoteException;
+    public boolean postInAnyCalendar(String userName, String timeInterval, String eventDescription, String accessControl)  throws RemoteException;
    	                            
 }

@@ -15,7 +15,7 @@ hs_err_pid*
 *.*~
 *~
 *.java~
-.metafata/
+.metadata/
 .recommenders/
 Test/
 UnityTest/
