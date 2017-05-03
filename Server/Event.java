@@ -1,4 +1,3 @@
-
 public class Event {
 	private String time;
 	private String description;
@@ -10,28 +9,28 @@ public class Event {
 		this.access = access;
 	}
 
-	public void setTime(String time) {
-		this.time = time;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	public void setAccess(String access) {
-		this.access = access;
-	}
-
 	public String getTime() {
 		return this.time;
+	}
+
+	public void setTime(String time) {
+		this.time = time;
 	}
 
 	public String getDescription() {
 		return this.description;
 	}
 
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
 	public String getAccess() {
 		return this.access;
+	}
+
+	public void setAccess(String access) {
+		this.access = access;
 	}
 
 	public String toString() {

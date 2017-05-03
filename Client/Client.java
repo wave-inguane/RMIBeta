@@ -22,48 +22,18 @@ import java.util.Scanner;
 import java.util.TreeMap;
 import java.util.Random;
 
-public class Client extends UnicastRemoteObject implements RemCalendar{
+public class Client extends UnicastRemoteObject implements RemCalendar {
 
 	private static final long serialVersionUID = 1L;
-	
-	private String chatClientName = null;
 	private static RemCalendar chatServer = null;
 	private static RemCalendar remcalendar = null;
+	private String chatClientName = null;
 
 	protected Client(String chatClientName, RemCalendar chatServer) throws RemoteException {
 		this.chatClientName = chatClientName;
 		this.chatServer = chatServer;
 		//register those who have been included in the group event
 		chatServer.registerChatClient(this);
-	}
-	
-	
-	public String getPosterName() throws RemoteException {
-	  return this.chatClientName;
-    }
-    
-	//retrieve a notification sent by a chat server
-	public void retrieveMessage(String message) throws RemoteException {
-	
-	    System.out.println("\n&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
-		System.out.println("\t" + "$ Notification from the server $" );
-		System.out.println(message);
-	    System.out.println("\n&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
-
-	}
-	
-
-	
-	public void broadcastMessage(String message)throws RemoteException{
-	//Do Nothing
-	//The server takes care of the notifications
-	}
-	
-	
-	public void registerChatClient(RemCalendar chatClient) throws RemoteException {
-		
-	//Do Nothing
-	//The server takes care of registering the clients
 	}
 
 	public static void main(String argv[]) {
@@ -75,7 +45,6 @@ public class Client extends UnicastRemoteObject implements RemCalendar{
 		}
 
 		String userName = argv[0];
-			
 
 
 		// Get a remote reference to the Calendar class
@@ -87,7 +56,7 @@ public class Client extends UnicastRemoteObject implements RemCalendar{
 
 			remcalendar = (RemCalendar) Naming.lookup(strName);
 			chatServer = remcalendar;
-			
+
 		} catch (Exception e) {
 
 			System.out.println("Client: Exception thrown looking up " + strName);
@@ -95,19 +64,18 @@ public class Client extends UnicastRemoteObject implements RemCalendar{
 		}
 
 		try {
-		
-		   if(remcalendar.findClient(userName)){
-		   		System.out.println("\n----------------------------------------------------");
+
+			if (remcalendar.findClient(userName)) {
+				System.out.println("\n----------------------------------------------------");
 				System.err.println("Error: The Client is already logged in");
 				System.out.println("--------------------------------------------------- \n");
 				Runtime.getRuntime().exit(1);
-				}
-			else
-			remcalendar.setUserName(userName);
+			} else
+				remcalendar.setUserName(userName);
 			userName = remcalendar.getUserName();
 			//register client
-		    Client client = new Client(userName, chatServer);
-			
+			Client client = new Client(userName, chatServer);
+
 			System.out.println("From Server: " + userName);
 
 			boolean flag = false;
@@ -177,31 +145,31 @@ public class Client extends UnicastRemoteObject implements RemCalendar{
 							boolean check = false;
 							System.out.println("Enter event time: (Ex: 9-10 or 17-19)");
 							String timeInterval = conIn.nextLine();
-							if(timeInterval.contains("-")) {
+							if (timeInterval.contains("-")) {
 								int count = 0;
-								for(int i = 0; i < timeInterval.length(); i++) {
-									if(timeInterval.charAt(i) == '-') {
+								for (int i = 0; i < timeInterval.length(); i++) {
+									if (timeInterval.charAt(i) == '-') {
 										count++;
-										if(count > 1) {
+										if (count > 1) {
 											System.out.println("\nPlease make sure you correct entered numbers.\n");
 											check = true;
 											break;
 										}
-									} else if(!Character.isDigit(timeInterval.charAt(i))) {
+									} else if (!Character.isDigit(timeInterval.charAt(i))) {
 										System.out.println("\nPlease make sure you entered correct numbers.\n");
 										check = true;
 										break;
 									}
 								}
-							} else if(!timeInterval.contains("-")) {
+							} else if (!timeInterval.contains("-")) {
 								System.out.println("\nPlease make sure you entered correct numbers.\n");
 								check = true;
-							} 
+							}
 
-							if(!check) {
+							if (!check) {
 								timeInterval = timeInterval.replaceAll(" ", "");
 								String[] checkTime = timeInterval.split("-");
-								if(Integer.parseInt(checkTime[0]) > Integer.parseInt(checkTime[1])) {
+								if (Integer.parseInt(checkTime[0]) > Integer.parseInt(checkTime[1])) {
 									System.out.println("\nWrong time entered! Please try again.\n");
 									break;
 								}
@@ -217,18 +185,18 @@ public class Client extends UnicastRemoteObject implements RemCalendar{
 									System.out.println("\n.........................................");
 									System.out.println("Event posted.");
 									System.out.println("...........................................");
-	
-						            //----------------IF OPEN EVENT NOTIFY ALL ACTIVE USERS----------
+
+									//----------------IF OPEN EVENT NOTIFY ALL ACTIVE USERS----------
 									//get all active users and register them except yourself
-									 //Notify them
-	                                 if(accessControl.equalsIgnoreCase("Open")){
-                                   
-									 	 //Send Notification to others
-									 	
-							            chatServer.broadcastMessage(userName + " : " +"has an open event from :"+ timeInterval);
-							         }
+									//Notify them
+									if (accessControl.equalsIgnoreCase("Open")) {
+
+										//Send Notification to others
+
+										chatServer.broadcastMessage(userName + " : " + "has an open event from :" + timeInterval);
+									}
 									//-------------------------End notification---------------------
-									
+
 								} else {
 									System.out.println("\n\nPost failed! Time overlap!");
 								}
@@ -257,12 +225,12 @@ public class Client extends UnicastRemoteObject implements RemCalendar{
 							System.out.println("Enter event access control: Ex: Private, Public, Group, and Open");
 							String accessControl = conIn.nextLine();
 
-							boolean isUpdated = remcalendar.updateEvent(userName, 
-																		pickedTime, 
-																		modifiedTime, 
-																		eventDescription, 
-																		accessControl);
-							if(isUpdated) {
+							boolean isUpdated = remcalendar.updateEvent(userName,
+									pickedTime,
+									modifiedTime,
+									eventDescription,
+									accessControl);
+							if (isUpdated) {
 								System.out.println("\nThe event has been modified.\n");
 							} else {
 								System.out.println("\nCannot modify an event because of time overlap or the calendar is empty.\n");
@@ -280,75 +248,75 @@ public class Client extends UnicastRemoteObject implements RemCalendar{
 							System.out.println("\nEnter the time of the event you'd like to delete (e.g: 9-10 or 17-19): ");
 							String eventTime = conIn.nextLine();
 							boolean isDeleted = remcalendar.deleteEvent(userName, eventTime);
-							if(isDeleted) {
+							if (isDeleted) {
 								System.out.println("\nThe event has been deleted.\n");
 							} else {
 								System.out.println("\nThere is no current event with that time." +
-								 " Therefore, nothing has been deleted\n");
+										" Therefore, nothing has been deleted\n");
 							}
 						}
 						break;
 					case 6:
-					    remcalendar.setUserName(userName);
+						remcalendar.setUserName(userName);
 						String result = remcalendar.viewAllCalendars();
 						userName = remcalendar.getUserName();
 						System.out.println(result);
 						break;
 					case 7:
-                        flag = remcalendar.calendarExist(userName);
-                        if (flag != true) {
-                            System.out.println("Please create a calendar first \n"
-                                    + "or select view calendars to select from existing calendars");
-                        } else {
-                            boolean check = false;
-                            System.out.println("Enter event time: (Ex: 9-10 or 17-19)");
-                            String timeInterval = conIn.nextLine();
-                            if (timeInterval.contains("-")) {
-                                int count = 0;
-                                for (int i = 0; i < timeInterval.length(); i++) {
-                                    if (timeInterval.charAt(i) == '-') {
-                                        count++;
-                                        if (count > 1) {
-                                            System.out.println("\nPlease make sure you correct entered numbers.\n");
-                                            check = true;
-                                            break;
-                                        }
-                                    } else if (!Character.isDigit(timeInterval.charAt(i))) {
-                                        System.out.println("\nPlease make sure you entered correct numbers.\n");
-                                        check = true;
-                                        break;
-                                    }
-                                }
-                            } else if (!timeInterval.contains("-")) {
-                                System.out.println("\nPlease make sure you entered correct numbers.\n");
-                                check = true;
-                            }
+						flag = remcalendar.calendarExist(userName);
+						if (flag != true) {
+							System.out.println("Please create a calendar first \n"
+									+ "or select view calendars to select from existing calendars");
+						} else {
+							boolean check = false;
+							System.out.println("Enter event time: (Ex: 9-10 or 17-19)");
+							String timeInterval = conIn.nextLine();
+							if (timeInterval.contains("-")) {
+								int count = 0;
+								for (int i = 0; i < timeInterval.length(); i++) {
+									if (timeInterval.charAt(i) == '-') {
+										count++;
+										if (count > 1) {
+											System.out.println("\nPlease make sure you correct entered numbers.\n");
+											check = true;
+											break;
+										}
+									} else if (!Character.isDigit(timeInterval.charAt(i))) {
+										System.out.println("\nPlease make sure you entered correct numbers.\n");
+										check = true;
+										break;
+									}
+								}
+							} else if (!timeInterval.contains("-")) {
+								System.out.println("\nPlease make sure you entered correct numbers.\n");
+								check = true;
+							}
 
-                            if (!check) {
-                                timeInterval = timeInterval.replaceAll(" ", "");
-                                String[] checkTime = timeInterval.split("-");
-                                if (Integer.parseInt(checkTime[0]) > Integer.parseInt(checkTime[1])) {
-                                    System.out.println("\nWrong time entered! Please try again.\n");
-                                    break;
-                                }
+							if (!check) {
+								timeInterval = timeInterval.replaceAll(" ", "");
+								String[] checkTime = timeInterval.split("-");
+								if (Integer.parseInt(checkTime[0]) > Integer.parseInt(checkTime[1])) {
+									System.out.println("\nWrong time entered! Please try again.\n");
+									break;
+								}
 
-                                System.out.println("Enter event description: Ex: Squash game with Mary ");
-                                String eventDescription = conIn.nextLine();
+								System.out.println("Enter event description: Ex: Squash game with Mary ");
+								String eventDescription = conIn.nextLine();
 
-                                System.out.println("Enter event access control: Ex: Private, Public, Group, and Open  ");
-                                String accessControl = conIn.nextLine();
+								System.out.println("Enter event access control: Ex: Private, Public, Group, and Open  ");
+								String accessControl = conIn.nextLine();
 
-                                flag = remcalendar.addGroupEvent(userName, timeInterval, eventDescription, accessControl);
-                                if (flag == true) {
-                                    System.out.println("\n.........................................");
-                                    System.out.println("Event posted.");
-                                    System.out.println(".........................................");
-                                } else {
-                                    System.out.println("\n\nPost failed! Time overlap!");
-                                }
-                            }
-                        }
-                        break;
+								flag = remcalendar.addGroupEvent(userName, timeInterval, eventDescription, accessControl);
+								if (flag == true) {
+									System.out.println("\n.........................................");
+									System.out.println("Event posted.");
+									System.out.println(".........................................");
+								} else {
+									System.out.println("\n\nPost failed! Time overlap!");
+								}
+							}
+						}
+						break;
 					case 9:
 						System.out.println("Please enter username: ");
 						userName = conIn.nextLine();
@@ -367,7 +335,7 @@ public class Client extends UnicastRemoteObject implements RemCalendar{
 						remcalendar.setUserName(userName);
 						System.out.println("Please enter owner's name: ");
 						String name = conIn.nextLine();
-						result = 	remcalendar.viewAnyCalendar(name);
+						result = remcalendar.viewAnyCalendar(name);
 						userName = remcalendar.getUserName();
 						System.out.println(result);
 						break;
@@ -385,10 +353,10 @@ public class Client extends UnicastRemoteObject implements RemCalendar{
 						break;
 					case 13:
 						remcalendar.setUserName(userName);
-					    userName = remcalendar.getUserName();
-							System.out.println("Please enter owner's name: ");
+						userName = remcalendar.getUserName();
+						System.out.println("Please enter owner's name: ");
 						name = conIn.nextLine();
-		                flag = remcalendar.calendarExist(name);
+						flag = remcalendar.calendarExist(name);
 						if (flag != true) {
 							System.out.println("Please create a calendar first \n"
 									+ "or select view calendars to select from existing calendars");
@@ -396,31 +364,31 @@ public class Client extends UnicastRemoteObject implements RemCalendar{
 							boolean check = false;
 							System.out.println("Enter event time: (Ex: 9-10 or 17-19)");
 							String timeInterval = conIn.nextLine();
-							if(timeInterval.contains("-")) {
+							if (timeInterval.contains("-")) {
 								int count = 0;
-								for(int i = 0; i < timeInterval.length(); i++) {
-									if(timeInterval.charAt(i) == '-') {
+								for (int i = 0; i < timeInterval.length(); i++) {
+									if (timeInterval.charAt(i) == '-') {
 										count++;
-										if(count > 1) {
+										if (count > 1) {
 											System.out.println("\nPlease make sure you correct entered numbers.\n");
 											check = true;
 											break;
 										}
-									} else if(!Character.isDigit(timeInterval.charAt(i))) {
+									} else if (!Character.isDigit(timeInterval.charAt(i))) {
 										System.out.println("\nPlease make sure you entered correct numbers.\n");
 										check = true;
 										break;
 									}
 								}
-							} else if(!timeInterval.contains("-")) {
+							} else if (!timeInterval.contains("-")) {
 								System.out.println("\nPlease make sure you entered correct numbers.\n");
 								check = true;
-							} 
+							}
 
-							if(!check) {
+							if (!check) {
 								timeInterval = timeInterval.replaceAll(" ", "");
 								String[] checkTime = timeInterval.split("-");
-								if(Integer.parseInt(checkTime[0]) > Integer.parseInt(checkTime[1])) {
+								if (Integer.parseInt(checkTime[0]) > Integer.parseInt(checkTime[1])) {
 									System.out.println("\nWrong time entered! Please try again.\n");
 									break;
 								}
@@ -430,29 +398,29 @@ public class Client extends UnicastRemoteObject implements RemCalendar{
 
 								System.out.println("Enter event access control: Ex: Private, Public, Group, and Open  ");
 								String accessControl = conIn.nextLine();
-								
-								 //take over shared variable
-                                 remcalendar.setUserName(userName);
-				
-								   flag = remcalendar.postInAnyCalendar(name, timeInterval, eventDescription, accessControl);
-								
-								   userName = remcalendar.getUserName();
+
+								//take over shared variable
+								remcalendar.setUserName(userName);
+
+								flag = remcalendar.postInAnyCalendar(name, timeInterval, eventDescription, accessControl);
+
+								userName = remcalendar.getUserName();
 								if (flag == true) {
 									System.out.println("\n.........................................");
 									System.out.println("Event posted.");
 									System.out.println("...........................................");
-	
-						            //----------------IF OPEN EVENT NOTIFY ALL ACTIVE USERS----------
+
+									//----------------IF OPEN EVENT NOTIFY ALL ACTIVE USERS----------
 									//get all active users and register them except yourself
-									 //Notify them
-	                                 if(accessControl.equalsIgnoreCase("Open")){
-                                   
-									 	 //Send Notification to others
-									 	
-							            chatServer.broadcastMessage(userName + " : " +"has an open event from :"+ timeInterval);
-							         }
+									//Notify them
+									if (accessControl.equalsIgnoreCase("Open")) {
+
+										//Send Notification to others
+
+										chatServer.broadcastMessage(userName + " : " + "has an open event from :" + timeInterval);
+									}
 									//-------------------------End notification---------------------
-									
+
 								} else {
 									System.out.println("\n\nPost failed! access denied");
 								}
@@ -475,74 +443,97 @@ public class Client extends UnicastRemoteObject implements RemCalendar{
 		}
 
 	}
-	
+
+	public String getPosterName() throws RemoteException {
+		return this.chatClientName;
+	}
+
+	//retrieve a notification sent by a chat server
+	public void retrieveMessage(String message) throws RemoteException {
+
+		System.out.println("\n&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
+		System.out.println("\t" + "$ Notification from the server $");
+		System.out.println(message);
+		System.out.println("\n&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
+
+	}
+
+	public void broadcastMessage(String message) throws RemoteException {
+		//Do Nothing
+		//The server takes care of the notifications
+	}
+
+	public void registerChatClient(RemCalendar chatClient) throws RemoteException {
+
+		//Do Nothing
+		//The server takes care of registering the clients
+	}
+
 	//--------------------Make the compiler happy------------------------------------
 	//------Do not re-implement these methods just call remote calendar if needed----
-	
-	public String getUserName() throws RemoteException, InterruptedException{
+
+	public String getUserName() throws RemoteException, InterruptedException {
 		return remcalendar.getUserName();
 	}
 
-	public void setUserName(String name) throws RemoteException, InterruptedException{
-			remcalendar.setUserName(name);
+	public void setUserName(String name) throws RemoteException, InterruptedException {
+		remcalendar.setUserName(name);
 	}
 
-	public boolean calendarExist(String userName) throws RemoteException{
+	public boolean calendarExist(String userName) throws RemoteException {
 		return remcalendar.calendarExist(userName);
 	}
 
-	public boolean createCalendar(String userName) throws RemoteException{
+	public boolean createCalendar(String userName) throws RemoteException {
 		return remcalendar.createCalendar(userName);
 	}
 
-	public boolean addEvent(String userName, String timeInterval, String eventDescription, String accessControl) throws RemoteException{
+	public boolean addEvent(String userName, String timeInterval, String eventDescription, String accessControl) throws RemoteException {
 		return remcalendar.addEvent(userName, timeInterval, eventDescription, accessControl);
 	}
 
-	public String viewCalendar(String userName) throws RemoteException{
-		return remcalendar. viewCalendar(userName);
+	public String viewCalendar(String userName) throws RemoteException {
+		return remcalendar.viewCalendar(userName);
 	}
 
-	public boolean deleteEvent(String userName, String eventTime) throws RemoteException{
-		return remcalendar.deleteEvent(userName, eventTime); 
+	public boolean deleteEvent(String userName, String eventTime) throws RemoteException {
+		return remcalendar.deleteEvent(userName, eventTime);
 	}
 
-	public boolean createAnotherCalendar(String userName) throws RemoteException{
+	public boolean createAnotherCalendar(String userName) throws RemoteException {
 		return remcalendar.createAnotherCalendar(userName);
 	}
 
-	public String viewAllCalendars() throws RemoteException{
+	public String viewAllCalendars() throws RemoteException {
 		return remcalendar.viewAllCalendars();
 	}
 
-	public boolean updateEvent(String userName, String pickedTime, String modifiedTime, String eventDescription, String accessControl) throws RemoteException{
-		return remcalendar.updateEvent(userName, pickedTime, modifiedTime, eventDescription, accessControl) ;
+	public boolean updateEvent(String userName, String pickedTime, String modifiedTime, String eventDescription, String accessControl) throws RemoteException {
+		return remcalendar.updateEvent(userName, pickedTime, modifiedTime, eventDescription, accessControl);
 	}
-	
-	public boolean addGroupEvent(String userName,String timeInterval, String eventDescription,String accessControl) throws RemoteException {
-	    return remcalendar.addGroupEvent(userName,	timeInterval, eventDescription,accessControl);
+
+	public boolean addGroupEvent(String userName, String timeInterval, String eventDescription, String accessControl) throws RemoteException {
+		return remcalendar.addGroupEvent(userName, timeInterval, eventDescription, accessControl);
 	}
-	                        
-	public ArrayList<String> getActiveUsers()throws RemoteException{
-	    return remcalendar.getActiveUsers();
-	 }
-	 
-	 public boolean findClient(String client)throws RemoteException{
-	 	return remcalendar.findClient(client);
-	 }
-	 
-	 
-	 public String viewAnyCalendar(String userName) throws RemoteException{
-	       return remcalendar.viewAnyCalendar(userName);
-	 }
-	 
-	 public boolean postInAnyCalendar(String otherUserName, String timeInterval, String eventDescription, String accessControl)  throws RemoteException{
-	  return  remcalendar.postInAnyCalendar(otherUserName, timeInterval, eventDescription, accessControl);
+
+	public ArrayList<String> getActiveUsers() throws RemoteException {
+		return remcalendar.getActiveUsers();
 	}
- 
+
+	public boolean findClient(String client) throws RemoteException {
+		return remcalendar.findClient(client);
+	}
+
+
+	public String viewAnyCalendar(String userName) throws RemoteException {
+		return remcalendar.viewAnyCalendar(userName);
+	}
+
+	public boolean postInAnyCalendar(String otherUserName, String timeInterval, String eventDescription, String accessControl) throws RemoteException {
+		return remcalendar.postInAnyCalendar(otherUserName, timeInterval, eventDescription, accessControl);
+	}
+
 	//-----End of making the compiler happy------------------------------
-
-
 }
 
 

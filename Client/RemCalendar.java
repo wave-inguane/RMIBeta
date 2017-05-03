@@ -34,24 +34,24 @@ public interface RemCalendar extends Remote {
 	public String viewAllCalendars() throws RemoteException;
 
 	public boolean updateEvent(String userName, String pickedTime, String modifiedTime, String eventDescription, String accessControl) throws RemoteException;
-	
-	public boolean addGroupEvent(String userName,String timeInterval,String eventDescription,String accessControl) throws RemoteException ;
-	
+
+	public boolean addGroupEvent(String userName, String timeInterval, String eventDescription, String accessControl) throws RemoteException;
+
 	public void registerChatClient(RemCalendar chatClient) throws RemoteException;
-	
-	public void broadcastMessage(String message)throws RemoteException;  
-	 
+
+	public void broadcastMessage(String message) throws RemoteException;
+
 	public void retrieveMessage(String message) throws RemoteException;
-	
-	public ArrayList<String> getActiveUsers()throws RemoteException;
-	
-    public String getPosterName() throws RemoteException;    
-      
-    public boolean findClient(String client)throws RemoteException;  
-    
-    public String viewAnyCalendar(String userName) throws RemoteException;  
-    
-    public boolean postInAnyCalendar(String userName, String timeInterval, String eventDescription, String accessControl)  throws RemoteException;                 
+
+	public ArrayList<String> getActiveUsers() throws RemoteException;
+
+	public String getPosterName() throws RemoteException;
+
+	public boolean findClient(String client) throws RemoteException;
+
+	public String viewAnyCalendar(String userName) throws RemoteException;
+
+	public boolean postInAnyCalendar(String userName, String timeInterval, String eventDescription, String accessControl) throws RemoteException;
 }
 
   
