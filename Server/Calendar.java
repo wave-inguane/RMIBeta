@@ -394,11 +394,11 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar{
 	}
 	
      public String viewAnyCalendar(String name) throws RemoteException{
-    	 
+
     	 if((isOwner(name) == true) && (userName.equals(name)))
     		 return viewCalendar(userName);
     	 else
-    	int eventNumber = 0;
+    	
  		StringBuilder sb = new StringBuilder();
  		sb.append("\t\t\t " + name + "'s  CALENDAR \n");
  		sb.append("..................................................................\n");
@@ -436,14 +436,14 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar{
     private boolean isOwner(String userName)  throws RemoteException{
 
     	for (Iterator<Map.Entry<String, Map<String, ArrayList<Event>>>> iterator = createdBy.entrySet().iterator(); iterator.hasNext(); ) {
-			Entry<String, Map<String, ArrayList<String>>> entry = iterator.next();
+			Entry<String, Map<String, ArrayList<Event>>> entry = iterator.next();
 
 			String key = entry.getKey();
 			Map<String, ArrayList<Event>> calendar = entry.getValue();
 
 			if (calendar != null) {
 				for (Iterator<Map.Entry<String, ArrayList<Event>>> iterator2 = calendar.entrySet().iterator(); iterator2.hasNext(); ) {
-					Entry<String, ArrayList<String>> entry2 = iterator2.next();
+					Entry<String, ArrayList<Event>> entry2 = iterator2.next();
 					String key2 = entry2.getKey();
 
 					if((key.substring(0,key2.length())).equals(key2)) { //is the owner
