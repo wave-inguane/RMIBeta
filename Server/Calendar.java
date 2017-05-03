@@ -278,7 +278,7 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 		sb.append("TIME \t\t EVENT \t\t\t ACCESS\n");
 		sb.append("..................................................................\n");
 		if (names.contains(userName)) {
-			ArrayList<Event> list = userCalendar.get(userName);
+			ArrayList<Event> list = userCalendar.get(userName); // gets the list of events for the current user (name)
 			if (list != null)
 				for (Event event : list) {
 					sb.append(event.getTime() + "\t\t" +
@@ -321,11 +321,12 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 			for (Event appt : list) {
 				if (appt.getTime().equals(pickedTime.replaceAll(" ", ""))) {
 					String[] currentTimeInterval = new String[2];
-					modifiedTime = modifiedTime.replaceAll(" ", "");
-					String[] newTimeInterval = modifiedTime.split("-");
-					ArrayList<Integer> startTime = new ArrayList<Integer>();
-					ArrayList<Integer> endTime = new ArrayList<Integer>();
+					modifiedTime = modifiedTime.replaceAll(" ", ""); // get rid of the whitespaces in the modifiedTime
+					String[] newTimeInterval = modifiedTime.split("-"); // split the modified time into two parts. for example: 10-11 gets split into [0] = 10 and [1] = 11
+					ArrayList<Integer> startTime = new ArrayList<Integer>(); // have a list to hold the first part of the time of the existing user's events
+					ArrayList<Integer> endTime = new ArrayList<Integer>(); // have a list to hold the second part of the time of the existing user's events
 
+					// Iterate through the user's calendar events and record their time in the lists
 					for (Iterator<Map.Entry<String, ArrayList<Event>>> iterator = userCalendar.entrySet().iterator(); iterator.hasNext(); ) {
 						Entry<String, ArrayList<Event>> entry = iterator.next();
 						String key = entry.getKey();
@@ -383,7 +384,7 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 				sb.append(".......................................................................\n");
 				ArrayList<Event> list = userCalendar.get(name);
 				if (name.equalsIgnoreCase(userName)) {
-					ArrayList<Event> apptList = userCalendar.get(name);
+					ArrayList<Event> apptList = userCalendar.get(name); // gets the list of events for the current user (name)
 					for (Event event : apptList) {
 						sb.append(event.getTime() + "\t\t" +
 								event.getDescription() + "\t\t" +
@@ -391,7 +392,7 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 					}
 				} else {
 					// Do not display "private" events if the !this.userName
-					ArrayList<Event> apptList = userCalendar.get(name);
+					ArrayList<Event> apptList = userCalendar.get(name); // gets the list of events for the current user (name)
 					for (Event event : apptList) {
 						if (!event.getAccess().equalsIgnoreCase("Private")) {
 							sb.append(event.getTime() + "\t\t" +
@@ -423,7 +424,7 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 			sb.append("TIME \t\t EVENT \t\t\t ACCESS\n");
 			sb.append("..................................................................\n");
 			if (names.contains(name)) {
-				ArrayList<Event> list = userCalendar.get(name);
+				ArrayList<Event> list = userCalendar.get(name); // gets the list of events for the current user (name)
 				if (list != null)
 					for (Event event : list) {
 						// Check for if the access if private
@@ -444,10 +445,13 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 	public boolean postInAnyCalendar(String name, String timeInterval, String eventDescription, String accessControl) throws RemoteException {
 
 		if ((isOwner(name) == true) && (userName.equals(name)))
+			// add an event into the name's calendar
+			//  addEvent() in its turn checks for overlaps
 			return addEvent(userName, timeInterval, eventDescription, accessControl);
 
 		if (accessControl.equalsIgnoreCase("Group")) {
-			//check for conflicting events
+			// If the access is Group then add into the calendar
+			// addEvent() in its turn checks for overlaps
 			return addEvent(name, timeInterval, eventDescription, accessControl);
 		}
 
