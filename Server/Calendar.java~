@@ -141,6 +141,13 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar{
 	       lock.unlock();
 	     }
 	   }
+	   
+	   
+	   public boolean findClient(String client)throws RemoteException{
+	      if(loggedIn.contains(client))
+	        return true;
+	        return false;
+	   }
 
 	public boolean calendarExist(String userName) throws RemoteException {
 		System.out.println("Server: Message > " + "calendarExist() invoked");

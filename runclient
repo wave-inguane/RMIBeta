@@ -1,4 +1,5 @@
 clear
+cd Client
 javac Client.java
 java Client Alice
 

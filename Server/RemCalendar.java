@@ -43,5 +43,6 @@ public interface RemCalendar extends Remote {
 	public void broadcastMessage(String message)throws RemoteException;  
 	public void retrieveMessage(String message) throws RemoteException;
 	public ArrayList<String> getActiveUsers()throws RemoteException;  
-	public String getPosterName() throws RemoteException;                                  
+	public String getPosterName() throws RemoteException;    
+	public boolean findClient(String client)throws RemoteException;                              
 }

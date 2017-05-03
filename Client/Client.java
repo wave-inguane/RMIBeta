@@ -76,6 +76,8 @@ public class Client extends UnicastRemoteObject implements RemCalendar{
 		}
 
 		String userName = argv[0];
+			
+
 
 		// Get a remote reference to the Calendar class
 		String strName = "rmi://localhost/CalendarServices";
@@ -95,6 +97,14 @@ public class Client extends UnicastRemoteObject implements RemCalendar{
 		}
 
 		try {
+		
+		   if(remcalendar.findClient(userName)){
+		   		System.out.println("\nerr err err err err err err err err err err err err ");
+				System.err.println("Error: The Client is already logged in");
+				System.out.println("err err err err err err err err err err err err err \n");
+				Runtime.getRuntime().exit(1);
+				}
+			else
 			remcalendar.setUserName(userName);
 			userName = remcalendar.getUserName();
 			//register client
@@ -437,6 +447,10 @@ public class Client extends UnicastRemoteObject implements RemCalendar{
 	                        
 	public ArrayList<String> getActiveUsers()throws RemoteException{
 	    return remcalendar.getActiveUsers();
+	 }
+	 
+	 public boolean findClient(String client)throws RemoteException{
+	 	return remcalendar.findClient(client);
 	 }
 	//-----End of making the compiler happy------------------------------
 
