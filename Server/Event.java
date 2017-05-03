@@ -1,10 +1,10 @@
 
-public class Appointment {
+public class Event {
 	private String time;
 	private String description;
 	private String access;
 
-	public Appointment(String time, String description, String access) {
+	public Event(String time, String description, String access) {
 		this.time = time;
 		this.description = description;
 		this.access = access;

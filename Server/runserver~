@@ -1,4 +1,0 @@
-clear
-javac CalendarManager.java
-rmiregistry &
-java -Djava.security.policy=policy.txt CalendarManager &
