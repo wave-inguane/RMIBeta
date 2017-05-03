@@ -39,7 +39,7 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar{
 	private Map<String , Map<String, ArrayList<Event>>> createdBy = new TreeMap();
 	private ArrayList<String> names = new ArrayList<>();
 	private ArrayList<String> loggedIn;
-	private ArrayList<String> generalAccess;
+	private ArrayList<Event> generalAccess;
 	private int ownerTracker;
 	
 	private String userName;
@@ -394,13 +394,13 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar{
 	}
 	
      public String viewAnyCalendar(String name) throws RemoteException{
-
+	  StringBuilder sb = new StringBuilder();
     	 if((isOwner(name) == true) && (userName.equals(name))){
     		String result = viewCalendar(userName);
     		 return result;
     	 }else{
     	
- 		StringBuilder sb = new StringBuilder();
+ 		 sb = new StringBuilder();
  		sb.append("\t\t\t " + name + "'s  CALENDAR \n");
  		sb.append("..................................................................\n");
  		sb.append("TIME \t\t EVENT \t\t\t ACCESS\n");
@@ -450,7 +450,7 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar{
 
 					if((key.substring(0,key2.length())).equals(key2)) { //is the owner
 						generalAccess  = entry2.getValue(); //return the calendar
-						return true;;
+						return true;
 					}
 				}
 			}
