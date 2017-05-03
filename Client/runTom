@@ -1,0 +1,4 @@
+clear
+javac Client.java
+java Client Tom
+

@@ -402,4 +402,16 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar{
 		}
 		return sb.toString();
 	}
+	
+	
+	
+     public void viewOtherCalendar(String userName) throws RemoteException{
+	       
+	 }
+    
+    public boolean isOwner(String userName)  throws RemoteException{
+         boolean flag = false;
+         
+    	return flag;
+	}
 }

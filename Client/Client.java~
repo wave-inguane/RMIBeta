@@ -83,7 +83,6 @@ public class Client extends UnicastRemoteObject implements RemCalendar{
 		String strName = "rmi://localhost/CalendarServices";
 		// String strName = "rmi://localhost:2934/CalendarServices";
 		System.out.println("Client: Looking up " + strName + "...");
-		//RemCalendar remcalendar = null;
 
 		try {
 
@@ -99,9 +98,9 @@ public class Client extends UnicastRemoteObject implements RemCalendar{
 		try {
 		
 		   if(remcalendar.findClient(userName)){
-		   		System.out.println("\nerr err err err err err err err err err err err err ");
+		   		System.out.println("\n----------------------------------------------------");
 				System.err.println("Error: The Client is already logged in");
-				System.out.println("err err err err err err err err err err err err err \n");
+				System.out.println("--------------------------------------------------- \n");
 				Runtime.getRuntime().exit(1);
 				}
 			else
@@ -225,7 +224,7 @@ public class Client extends UnicastRemoteObject implements RemCalendar{
                                    
 									 	 //Send Notification to others
 									 	
-							            chatServer.broadcastMessage(userName + " : " +"have an open event from :"+ timeInterval);
+							            chatServer.broadcastMessage(userName + " : " +"has an open event from :"+ timeInterval);
 							         }
 									//-------------------------End notification---------------------
 									
@@ -288,6 +287,12 @@ public class Client extends UnicastRemoteObject implements RemCalendar{
 							}
 						}
 						break;
+					case 6:
+					    remcalendar.setUserName(userName);
+						String result = remcalendar.viewAllCalendars();
+						userName = remcalendar.getUserName();
+						System.out.println(result);
+						break;
 					case 7:
                         flag = remcalendar.calendarExist(userName);
                         if (flag != true) {
@@ -343,11 +348,6 @@ public class Client extends UnicastRemoteObject implements RemCalendar{
                             }
                         }
                         break;
-					case 6:
-						String result = remcalendar.viewAllCalendars();
-						System.out.println(result);
-						break;
-
 					case 9:
 						System.out.println("Please enter username: ");
 						userName = conIn.nextLine();
@@ -435,15 +435,9 @@ public class Client extends UnicastRemoteObject implements RemCalendar{
 		return remcalendar.updateEvent(userName, pickedTime, modifiedTime, eventDescription, accessControl) ;
 	}
 	
-	public boolean addGroupEvent(String userName,
-							String timeInterval,
-	                        String eventDescription,
-	                        String accessControl) throws RemoteException {
-	                        return remcalendar.addGroupEvent(userName,
-							timeInterval,
-	                        eventDescription,
-	                        accessControl);
-	                        }
+	public boolean addGroupEvent(String userName,String timeInterval, String eventDescription,String accessControl) throws RemoteException {
+	    return remcalendar.addGroupEvent(userName,	timeInterval, eventDescription,accessControl);
+	}
 	                        
 	public ArrayList<String> getActiveUsers()throws RemoteException{
 	    return remcalendar.getActiveUsers();
@@ -452,6 +446,15 @@ public class Client extends UnicastRemoteObject implements RemCalendar{
 	 public boolean findClient(String client)throws RemoteException{
 	 	return remcalendar.findClient(client);
 	 }
+	 
+	 
+	 public void viewOtherCalendar(String userName) throws RemoteException{
+	       remcalendar.viewOtherCalendar(userName);
+	 }
+    
+    public boolean isOwner(String userName)  throws RemoteException{
+    	return remcalendar.isOwner(userName);
+    } 
 	//-----End of making the compiler happy------------------------------
 
 }
