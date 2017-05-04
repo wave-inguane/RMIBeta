@@ -180,6 +180,7 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 	                        String accessControl) throws RemoteException {
 		System.out.println("Server: Message > " + "addEvent() invoked");
 
+				
 		// Check for the overlaps first
 		if (userCalendar != null) {
 			String[] currentTimeInterval = new String[2];
@@ -242,13 +243,12 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 	                             String timeInterval,
 	                             String eventDescription,
 	                             String accessControl) throws RemoteException {
-	     //lock
-	     try{        
-	    	 setUserName(userName);      
-	     }catch (InterruptedException e){
-	     	System.out.println("PROBLEM SETTING UP GROUP EVENT: " + e);
-	     }
-	                             
+                
+	    lockCalendars.lock();
+		try {
+			while (sentinelC != -1)
+			 notfinished.await();
+	
 		if(userCalendar != null) {
 			// Check for group overlaps
 			String[] currentTimeInterval = new String[2];
@@ -273,26 +273,29 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 					}
 				}
 			}
-			
-			
+					 
+	
+		
 			// Check if there is any overlap
 			if (!startTime.isEmpty()) {
 				for (int i = 0; i < startTime.size(); i++) {
 					if (Integer.parseInt(newTimeInterval[1]) >= startTime.get(i) &&
 							Integer.parseInt(newTimeInterval[0]) <= endTime.get(i)) {
-							
-							//can unlock
-							try{
-							  getUserName();
-							}catch(InterruptedException e){
-								System.out.println("PROBLEM SETTING UP GROUP EVENT: " + e);
-							}
 						return false;
 					}
 				}
 			}
 		}
 
+
+		++sentinelC; 
+			finished.signal();
+			}catch(InterruptedException e){
+	  	       System.out.println(e);
+		} finally {
+			lockCalendars.unlock();
+		} 
+		
 		//STEP 1:
 		boolean flag = false;
 		String recordTimeToBeRemoved = "";
@@ -326,7 +329,14 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 			}
 		}
 
+
 		int count = 0;
+		lockCalendars.lock();
+		try {
+			while (sentinelC != 0)
+			finished.wait();
+		
+		
 		//STEP 4:
 	    for(int j = 0; j < names.size(); j++) {
 	  		if(sb.toString().contains(names.get(j))) {
@@ -334,22 +344,23 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 	  		}
 		}
 		
+	
 	  	if(count > 1) {
 	  			flag = addEvent(userName, timeInterval, sb.toString(), "Group");
 	  		if(eventTobeRemoved != null) {
 		    	l.remove(eventTobeRemoved);
 			}
-
 	  	} else {
 	  		flag = addEvent(userName, timeInterval, eventDescription, accessControl);
 	  	}
-	  	
-	  	//unlock
-	  	try{
-	  	getUserName();
+	  		  	--sentinelC;
+	  	        notfinished.signal();
 	  	}catch(InterruptedException e){
-	       	System.out.println("PROBLEM SETTING UP GROUP EVENT: " + e);
-	  	}
+	  	       System.out.println(e);
+	  			} finally {
+			lockCalendars.unlock();
+		}
+
 	  
 	  return flag;
 	}
