@@ -568,7 +568,7 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 	// If name is not this.userName, then do not display private events
 	public String viewAnyCalendar(String name) throws RemoteException {
 		StringBuilder sb = new StringBuilder();
-		if ((isOwner(name) == true) && (userName.equals(name))) {
+		if (userName.equals(name)){ //isOwner(name) == true) && 
 			String result = viewCalendar(userName);
 			return result;
 		} else {
@@ -610,7 +610,7 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 	}
 
 	// Checks if the userName is the owner of calendar
-	private boolean isOwner(String userName) throws RemoteException {
+	private boolean isOwner(String name) throws RemoteException {
 
 		for (Iterator<Map.Entry<String, Map<String, ArrayList<Event>>>> iterator = createdBy.entrySet().iterator(); iterator.hasNext(); ) {
 			Entry<String, Map<String, ArrayList<Event>>> entry = iterator.next();
@@ -623,9 +623,10 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 					Entry<String, ArrayList<Event>> entry2 = iterator2.next();
 					String key2 = entry2.getKey();
 
-					if ((key.substring(0, key2.length())).equals(userName))  //is the owner
+					if (((key.substring(0, key2.length())).equals(key2)) && key2.equals(name)){  //is the owner
+					    //generalAccess = entry2.getValue();
 						return true;
-					
+					}
 				}
 			}
 		}
