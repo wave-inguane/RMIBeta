@@ -1,4 +1,0 @@
-clear
-javac Client.java
-java Client Alice
-
