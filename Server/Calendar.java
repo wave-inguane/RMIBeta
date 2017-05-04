@@ -185,7 +185,7 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 			for (Iterator<Map.Entry<String, ArrayList<Event>>> iterator = userCalendar.entrySet().iterator(); iterator.hasNext(); ) {
 				Entry<String, ArrayList<Event>> entry = iterator.next();
 				String key = entry.getKey();
-				if (key.equalsIgnoreCase(userName)) {
+				if (key.equalsIgnoreCase(userName) && !accessControl.equals("Group")) {
 					ArrayList<Event> apptList = entry.getValue();
 					for (Event event : apptList) {
 						currentTimeInterval = event.getTime().split("-");
@@ -235,12 +235,56 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 	                             String timeInterval,
 	                             String eventDescription,
 	                             String accessControl) throws RemoteException {
+		if(userCalendar != null) {
+			// Check for group overlaps
+			String[] currentTimeInterval = new String[2];
+			timeInterval = timeInterval.replaceAll(" ", ""); // get rid of the whitespaces in the args timeinterval
+			String[] newTimeInterval = timeInterval.split("-"); // get rid of dash and split time into two parts
+			ArrayList<Integer> startTime = new ArrayList<Integer>(); // put the first part of the time of calendars into the list
+			ArrayList<Integer> endTime = new ArrayList<Integer>(); // put the second part of the time of calendars into the list
+
+			// Gather all the times of the existing user's caluendars into lists
+			for (Iterator<Map.Entry<String, ArrayList<Event>>> iterator = userCalendar.entrySet().iterator(); iterator.hasNext(); ) {
+				Entry<String, ArrayList<Event>> entry = iterator.next();
+				String key = entry.getKey();
+				// check the group events in other calendars
+				if (!key.equalsIgnoreCase(userName)) {
+					ArrayList<Event> apptList = entry.getValue();
+					for (Event event : apptList) {
+						if(event.getAccess().equals("Group")) {
+							currentTimeInterval = event.getTime().split("-");
+							startTime.add(Integer.parseInt(currentTimeInterval[0]));
+							endTime.add(Integer.parseInt(currentTimeInterval[1]));
+						}
+					}
+				}
+				// } else if(key.equalsIgnoreCase(userName)) {
+				// 	ArrayList<Event> apptList = entry.getValue();
+				// 	for (Event event : apptList) {
+				// 		if(!event.getAccess().equals("Open")) {
+				// 			currentTimeInterval = event.getTime().split("-");
+				// 			startTime.add(Integer.parseInt(currentTimeInterval[0]));
+				// 			endTime.add(Integer.parseInt(currentTimeInterval[1]));
+				// 		}
+				// 	}
+				// }
+			}
+			// Check if there is any overlap
+			if (!startTime.isEmpty()) {
+				for (int i = 0; i < startTime.size(); i++) {
+					if (Integer.parseInt(newTimeInterval[1]) >= startTime.get(i) &&
+							Integer.parseInt(newTimeInterval[0]) <= endTime.get(i)) {
+						return false;
+					}
+				}
+			}
+		}
 
 		//STEP 1:
 		boolean flag = false;
 
 		StringBuilder sb = new StringBuilder();
-		sb.append(eventDescription);
+		sb.append(eventDescription + "\n \t\tMembers: ");
 
 		//STEP 3:
 		int i = 0;
@@ -252,19 +296,33 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 				String[] apptTime = event.getTime().split("-");
 				String[] groupTime = timeInterval.split("-");
 				if ((Integer.parseInt(apptTime[0]) >= Integer.parseInt(groupTime[0]) &&
-						(Integer.parseInt(apptTime[0]) < Integer.parseInt(groupTime[1]))) &&
-						((Integer.parseInt(apptTime[1]) > Integer.parseInt(groupTime[0])) &&
-								(Integer.parseInt(apptTime[1]) <= Integer.parseInt(groupTime[1]))) && event.getAccess().equalsIgnoreCase("Open")) {
-					sb.append(addMe + "\n");
-
+					(Integer.parseInt(apptTime[0]) < Integer.parseInt(groupTime[1]))) &&
+					((Integer.parseInt(apptTime[1]) > Integer.parseInt(groupTime[0])) &&
+					(Integer.parseInt(apptTime[1]) >= Integer.parseInt(groupTime[1]))) &&
+					event.getAccess().equalsIgnoreCase("Open")) {
+						if(!sb.toString().contains(userName)) {
+		                	sb.append("" + userName + " " + addMe + " ");
+		                } else if(!sb.toString().contains(addMe)) {
+		                	sb.append("" + addMe + " ");
+		                }
 				}
 			}
 		}
 
 		//STEP 4:
-		flag = addEvent(userName, timeInterval, sb.toString(), accessControl);
-
-		return flag;
+		boolean isGroup = false; 
+	    for(int j = 0; j < names.size(); j++) {
+	  		if(sb.toString().contains(names.get(j))) {
+	  			isGroup = true;
+	  			break;
+	  		}
+		}
+	  	if(isGroup) {
+	  		flag = addEvent(userName, timeInterval, sb.toString(), "Group");
+	  	} else {
+	  		flag = addEvent(userName, timeInterval, sb.toString(), accessControl);
+	  	}
+	  return flag;
 	}
 
 
