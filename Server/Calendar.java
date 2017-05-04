@@ -30,6 +30,12 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 	final Condition hasNotChanged = lock.newCondition();
 	final Condition hasChanged = lock.newCondition();
 	int sentinel = -1;
+	
+	
+	final Lock lockCalendars = new ReentrantLock();
+	final Condition notfinished = lockCalendars.newCondition();
+	final Condition finished = lockCalendars.newCondition();
+	int sentinelC = -1;
 
 	private ArrayList<RemCalendar> chatClients; // variable to handle notification
 
@@ -45,6 +51,7 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 	// Default constructor
 	public Calendar() throws RemoteException {
 		this.sentinel = -1;
+		this.sentinelC = -1;
 		this.ownerTracker = 0;
 		this.chatClients = new ArrayList<RemCalendar>();
 		this.loggedIn = new ArrayList<>();
@@ -235,6 +242,13 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 	                             String timeInterval,
 	                             String eventDescription,
 	                             String accessControl) throws RemoteException {
+	     //lock
+	     try{        
+	    	 setUserName(userName);      
+	     }catch (InterruptedException e){
+	     	System.out.println("PROBLEM SETTING UP GROUP EVENT: " + e);
+	     }
+	                             
 		if(userCalendar != null) {
 			// Check for group overlaps
 			String[] currentTimeInterval = new String[2];
@@ -259,11 +273,20 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 					}
 				}
 			}
+			
+			
 			// Check if there is any overlap
 			if (!startTime.isEmpty()) {
 				for (int i = 0; i < startTime.size(); i++) {
 					if (Integer.parseInt(newTimeInterval[1]) >= startTime.get(i) &&
 							Integer.parseInt(newTimeInterval[0]) <= endTime.get(i)) {
+							
+							//can unlock
+							try{
+							  getUserName();
+							}catch(InterruptedException e){
+								System.out.println("PROBLEM SETTING UP GROUP EVENT: " + e);
+							}
 						return false;
 					}
 				}
@@ -310,8 +333,9 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 	  			count++;
 	  		}
 		}
+		
 	  	if(count > 1) {
-	  		flag = addEvent(userName, timeInterval, sb.toString(), "Group");
+	  			flag = addEvent(userName, timeInterval, sb.toString(), "Group");
 	  		if(eventTobeRemoved != null) {
 		    	l.remove(eventTobeRemoved);
 			}
@@ -319,6 +343,14 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 	  	} else {
 	  		flag = addEvent(userName, timeInterval, eventDescription, accessControl);
 	  	}
+	  	
+	  	//unlock
+	  	try{
+	  	getUserName();
+	  	}catch(InterruptedException e){
+	       	System.out.println("PROBLEM SETTING UP GROUP EVENT: " + e);
+	  	}
+	  
 	  return flag;
 	}
 
@@ -577,7 +609,7 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 	// If name is not this.userName, then do not display private events
 	public String viewAnyCalendar(String name) throws RemoteException {
 		StringBuilder sb = new StringBuilder();
-		if ((isOwner(name) == true) && (userName.equals(name))) {
+		if (userName.equals(name)){
 			String result = viewCalendar(userName);
 			return result;
 		} else {
@@ -608,38 +640,9 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 		return sb.toString();
 	}
 
-	// Post and event in any user's calendar
-	public boolean postInAnyCalendar(String name, String timeInterval, String eventDescription, String accessControl) throws RemoteException {
-	   
-		for (String n : userCalendar.keySet()) {
-			if(n != null && name.equalsIgnoreCase(n)) {
-				return addEvent(n, timeInterval, eventDescription, accessControl);
-			}
-		}
-		return false;
-	}
+  public void loggedOut(String name)throws RemoteException {
+  		loggedIn.remove(name);
+  }
 
-	// Checks if the userName is the owner of calendar
-	private boolean isOwner(String userName) throws RemoteException {
 
-		for (Iterator<Map.Entry<String, Map<String, ArrayList<Event>>>> iterator = createdBy.entrySet().iterator(); iterator.hasNext(); ) {
-			Entry<String, Map<String, ArrayList<Event>>> entry = iterator.next();
-
-			String key = entry.getKey();
-			Map<String, ArrayList<Event>> calendar = entry.getValue();
-
-			if (calendar != null) {
-				for (Iterator<Map.Entry<String, ArrayList<Event>>> iterator2 = calendar.entrySet().iterator(); iterator2.hasNext(); ) {
-					Entry<String, ArrayList<Event>> entry2 = iterator2.next();
-					String key2 = entry2.getKey();
-
-					if ((key.substring(0, key2.length())).equals(key2)) { //is the owner
-						generalAccess = entry2.getValue(); //return the calendar
-						return true;
-					}
-				}
-			}
-		}
-		return false;
-	}
 }
