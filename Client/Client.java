@@ -90,17 +90,17 @@ public class Client extends UnicastRemoteObject implements RemCalendar {
 			// Display the menu and operate on the user choic option
 			while (keepGoing) {
 				System.out.println("\nChoose a Task: ");
-				System.out.println("1: create my calendar");
-				System.out.println("2: view my calendar ");
-				System.out.println("3: post my event ");
-				System.out.println("4: modify my event ");
-				System.out.println("5: delete my event ");
-				System.out.println("6: view all calendars");
-				System.out.println("7: add a group event");
-				System.out.println("9: create another calendar ");
+				System.out.println("1:  create my calendar");
+				System.out.println("2:  view my calendar ");
+				System.out.println("3:  post my event ");
+				System.out.println("4:  modify my event ");
+				System.out.println("5:  delete my event ");
+				System.out.println("6:  view all calendars");
+				System.out.println("7:  add a group event");
+				System.out.println("9:  create another calendar ");
 				System.out.println("10: viewAnyCalendar");
 				System.out.println("11: switch users ");
-				System.out.println("13:  postInAnyCalendar");
+				System.out.println("13: postInAnyCalendar");
 				System.out.println("14: exit ");
 
 				// Pick the entered operation
