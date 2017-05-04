@@ -301,11 +301,7 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 					((Integer.parseInt(apptTime[1]) > Integer.parseInt(groupTime[0])) &&
 					(Integer.parseInt(apptTime[1]) >= Integer.parseInt(groupTime[1]))) &&
 					event.getAccess().equalsIgnoreCase("Open")) {
-						if(!sb.toString().contains(userName)) {
-		                	sb.append("" + userName + " " + addMe + " ");
-		                } else {
-		                	sb.append("" + addMe + " ");
-		                }
+		                sb.append("" + addMe + " ");
 
 		                if(userName.equals(addMe) && 
 		                	(Integer.parseInt(apptTime[0]) >= Integer.parseInt(groupTime[0]) &&
