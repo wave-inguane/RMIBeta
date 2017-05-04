@@ -97,6 +97,7 @@ public class Client extends UnicastRemoteObject implements RemCalendar {
 				System.out.println("5:  delete my event ");
 				System.out.println("6:  view all calendars");
 				System.out.println("7:  add a group event");
+				System.out.println("8:  modify the group's event description and time ");
 				System.out.println("9:  create another calendar ");
 				System.out.println("10: viewAnyCalendar");
 				System.out.println("11: switch users ");
@@ -329,6 +330,24 @@ public class Client extends UnicastRemoteObject implements RemCalendar {
 							}
 						}
 						break;
+					case 8:
+						System.out.println("\nEnter the time of the Group event that you're in: ");
+						String groupTime = conIn.nextLine();
+						System.out.println("Now enter the time you would like to change the Group event time:");
+						String newGroupTime = conIn.nextLine();
+						System.out.println("And finally enter the new group event description:");
+						String newEventDescription = conIn.nextLine();
+
+						boolean isModified = remcalendar.modifyGroup(userName, groupTime, newGroupTime, newEventDescription);
+						if(isModified) {
+							System.out.println("\n\nThe group event has been modified");
+
+						} else {
+							System.out.println("\n\nFailed to modify because of the time overlaps with other group events or open intervals or wrong Group time was entered");
+							System.out.println("Members count: " + remcalendar.getMemberCount());
+							System.out.println("Open Interval count: " + remcalendar.getOpenIntervalsCheck());
+						}
+						break;
 					case 9:
 						System.out.println("Please enter username: ");
 						userName = conIn.nextLine();
@@ -530,6 +549,10 @@ public class Client extends UnicastRemoteObject implements RemCalendar {
 		return remcalendar.addGroupEvent(userName, timeInterval, eventDescription, accessControl);
 	}
 
+	public boolean modifyGroup(String userName, String groupTime, String newGroupTime, String newEventDescription) throws RemoteException {
+		return remcalendar.modifyGroup(userName, groupTime, newGroupTime, newEventDescription);
+	}
+
 	public ArrayList<String> getActiveUsers() throws RemoteException {
 		return remcalendar.getActiveUsers();
 	}
@@ -546,6 +569,15 @@ public class Client extends UnicastRemoteObject implements RemCalendar {
 	public boolean postInAnyCalendar(String otherUserName, String timeInterval, String eventDescription, String accessControl) throws RemoteException {
 		return remcalendar.postInAnyCalendar(otherUserName, timeInterval, eventDescription, accessControl);
 	}
+
+	// The next two methods are purely for testing purposes
+	public int getMemberCount() throws RemoteException {
+    	return remcalendar.getMemberCount();
+    }
+
+    public int getOpenIntervalsCheck() throws RemoteException {
+    	return remcalendar.getOpenIntervalsCheck();
+    }
 
 	//-----End of making the compiler happy------------------------------
 }

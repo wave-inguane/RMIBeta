@@ -322,6 +322,96 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 	  return flag;
 	}
 
+	public int memberCount = 0;
+    public int openIntervalsCheck = 0;
+    public int getMemberCount() {
+    	return memberCount;
+    }
+    public int getOpenIntervalsCheck() {
+    	return openIntervalsCheck;
+    }
+
+	 // Modify the group event
+    public boolean modifyGroup(String userName, 
+    						   String groupTime, 
+    						   String newGroupTime, 
+    						   String newEventDescription) {
+    	memberCount = 0;
+    	openIntervalsCheck = 0;
+    	// Check for group time overlaps
+    	if(!names.isEmpty()) {
+			String[] currentTimeInterval = new String[2];
+			newGroupTime = newGroupTime.replaceAll(" ", "");
+			String[] newTimeInterval = newGroupTime.split("-");
+			ArrayList<Integer> startTime = new ArrayList<Integer>();
+			ArrayList<Integer> endTime = new ArrayList<Integer>();
+
+			for (Iterator<Map.Entry<String, ArrayList<Event>>> iterator = userCalendar.entrySet().iterator(); iterator.hasNext(); ) {
+				Entry<String, ArrayList<Event>> entry = iterator.next();
+				String key = entry.getKey();
+				ArrayList<Event> apptList = entry.getValue();
+				for (Event event : apptList) {
+					if(event.getAccess().equalsIgnoreCase("Group") && !event.getTime().equals(groupTime.replaceAll(" ", ""))) {
+						currentTimeInterval = event.getTime().split("-");
+						startTime.add(Integer.parseInt(currentTimeInterval[0]));
+						endTime.add(Integer.parseInt(currentTimeInterval[1]));
+
+					}
+				}
+			}
+			if (!startTime.isEmpty()) {
+				for (int i = 0; i < startTime.size(); i++) {
+					if (Integer.parseInt(newTimeInterval[1]) >= startTime.get(i) &&
+							Integer.parseInt(newTimeInterval[0]) <= endTime.get(i)) {
+						return false;
+					}
+				}
+			}
+		}
+
+		newEventDescription = newEventDescription + "\n \t\t Members:";
+    	for (String name : userCalendar.keySet()) {
+			ArrayList<Event> list = userCalendar.get(name);
+			for(Event event: list) {
+				if(event.getDescription().contains(userName) && 
+					groupTime.equals(event.getTime()) && 
+					event.getAccess().equalsIgnoreCase("Group")) {
+					
+					memberCount++;
+					for(int i = 0; i < names.size(); i++) {
+						if(event.getDescription().contains(names.get(i)) && !names.get(i).equalsIgnoreCase(userName)) {
+							memberCount++;
+						}
+					}
+					// Check if there is an the newGroupTime contains all of the members open intervals
+		    		for (String name1 : userCalendar.keySet()) {
+						ArrayList<Event> l = userCalendar.get(name1);
+		    			for(Event a: l) {
+		    				String[] apptTime = a.getTime().split("-");
+					        String[] groupEventTime = newGroupTime.split("-");
+					        if ((Integer.parseInt(apptTime[0]) <= Integer.parseInt(groupEventTime[0]) &&
+								(Integer.parseInt(apptTime[1]) >= Integer.parseInt(groupEventTime[1]))) &&
+								a.getAccess().equalsIgnoreCase("Open")) {
+					        	openIntervalsCheck++;
+					        }
+		    			}
+		    		}
+		    		if((memberCount-1) == openIntervalsCheck) {
+			    		for(int j = 0; j < names.size(); j++) {
+			    			if(event.getDescription().contains(names.get(j))){
+			    				newEventDescription += " " + names.get(j) + " ";
+			    			}
+			    		}
+			    		event.setDescription(newEventDescription);
+			    		event.setTime(newGroupTime);
+			    		return true;
+			    	}
+				}
+			}
+		}
+		return false;
+    }
+
 
 	// Displays the calendar of the userName
 	public String viewCalendar(String userName) throws RemoteException {
