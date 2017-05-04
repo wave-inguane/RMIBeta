@@ -293,7 +293,6 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 		String addMe;
 		while (i < names.size()) {
 			ArrayList<Event> list = userCalendar.get(addMe = names.get(i++));
-
 			for (Event event : list) {
 				String[] apptTime = event.getTime().split("-");
 				String[] groupTime = timeInterval.split("-");
