@@ -46,8 +46,10 @@ public interface RemCalendar extends Remote {
 	public boolean updateEvent(String userName, String pickedTime, String modifiedTime, String eventDescription, String accessControl) throws RemoteException;
 	
 	// Method that adds group event into userName's calendar
- 	public boolean addGroupEvent(String userName,String timeInterval,String eventDescription,String accessControl)
- 			throws RemoteException ;
+ 	public boolean addGroupEvent(String userName, String timeInterval, String eventDescription, String accessControl) throws RemoteException;
+
+ 	// Method that modifies the data of the group
+ 	public boolean modifyGroup(String userName, String groupTime, String newGroupTime, String newEventDescription) throws RemoteException;		
 	
 	// Method that registers client for notifications
 	public void registerChatClient(RemCalendar chatClient) throws RemoteException;
@@ -72,5 +74,9 @@ public interface RemCalendar extends Remote {
     
     // Method that posts an event in the userName's calendar
     public boolean postInAnyCalendar(String userName, String timeInterval, String eventDescription, String accessControl)  throws RemoteException;
-   	                            
+   	
+   	// The next two methods are purely for testing purposes
+   	public int getMemberCount() throws RemoteException;
+
+   	public int getOpenIntervalsCheck() throws RemoteException;                       
 }
