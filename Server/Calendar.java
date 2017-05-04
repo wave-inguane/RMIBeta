@@ -282,7 +282,9 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 
 		//STEP 1:
 		boolean flag = false;
-
+		String recordTimeToBeRemoved = "";
+		Event eventTobeRemoved = null;
+		ArrayList l = null;
 		StringBuilder sb = new StringBuilder();
 		sb.append(eventDescription + "\n \t\tMembers: ");
 
@@ -302,8 +304,18 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 					event.getAccess().equalsIgnoreCase("Open")) {
 						if(!sb.toString().contains(userName)) {
 		                	sb.append("" + userName + " " + addMe + " ");
-		                } else if(!sb.toString().contains(addMe)) {
+		                } else if(sb.toString().contains(addMe)) {
 		                	sb.append("" + addMe + " ");
+		                }
+
+		                if(userName.equals(addMe) && 
+		                	(Integer.parseInt(apptTime[0]) >= Integer.parseInt(groupTime[0]) &&
+							(Integer.parseInt(apptTime[0]) < Integer.parseInt(groupTime[1]))) &&
+							((Integer.parseInt(apptTime[1]) > Integer.parseInt(groupTime[0])) &&
+							(Integer.parseInt(apptTime[1]) >= Integer.parseInt(groupTime[1]))) &&
+							event.getAccess().equalsIgnoreCase("Open")) {
+		                		eventTobeRemoved = event;
+		                		l = list;
 		                }
 				}
 			}
@@ -319,6 +331,8 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 		}
 	  	if(isGroup) {
 	  		flag = addEvent(userName, timeInterval, sb.toString(), "Group");
+		    l.remove(eventTobeRemoved);
+
 	  	} else {
 	  		flag = addEvent(userName, timeInterval, sb.toString(), accessControl);
 	  	}
