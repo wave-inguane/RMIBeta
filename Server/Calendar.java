@@ -424,12 +424,19 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 		sb.append("..................................................................\n");
 		if (names.contains(userName)) {
 			ArrayList<Event> list = userCalendar.get(userName); // gets the list of events for the current user (name)
-			if (list != null)
+			if (list != null) {
 				for (Event event : list) {
-					sb.append(event.getTime() + "\t\t" +
+					if(event.getAccess().equalsIgnoreCase("Group") && !event.getDescription().contains(userName)) {
+							sb.append(event.getTime() + "\t\t" +
+							"---------" + "\t\t" +
+							event.getAccess() + "\n");
+					} else {
+						sb.append(event.getTime() + "\t\t" +
 							event.getDescription() + "\t\t" +
 							event.getAccess() + "\n");
+					}
 				}
+			}
 		}
 		sb.append("================================================================\n");
 		sb.append("\n");
@@ -510,7 +517,7 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 	public boolean createAnotherCalendar(String userName) throws RemoteException {
 		System.out.println("Server: Message > " + "createAnotherCalendar() invoked");
 		// Check if the calendar exists first
-		if (calendarExist(userName))
+		if (calendarExist(userName) || findClient(userName))
 			return false;
 		else {
 			return createCalendar(userName);
@@ -532,7 +539,7 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 					ArrayList<Event> apptList = userCalendar.get(name); // gets the list of events for the current user (name)
 					for (Event event : apptList) {
 						// Check if the user is the group member
-						if(event.getAccess().equalsIgnoreCase("Group") && !event.getDescription().contains(name)) {
+						if(event.getAccess().equalsIgnoreCase("Group") && !event.getDescription().contains(userName)) {
 							sb.append(event.getTime() + "\t\t" +
 							"---------" + "\t\t" +
 							event.getAccess() + "\n");
@@ -547,7 +554,7 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 					ArrayList<Event> apptList = userCalendar.get(name); // gets the list of events for the current user (name)
 					for (Event event : apptList) {
 						if (!event.getAccess().equalsIgnoreCase("Private")) {
-							if(event.getAccess().equalsIgnoreCase("Group") && !event.getDescription().contains(name)) {
+							if(event.getAccess().equalsIgnoreCase("Group") && !event.getDescription().contains(userName)) {
 								sb.append(event.getTime() + "\t\t" +
 								"---------" + "\t\t" +
 								event.getAccess() + "\n");
@@ -584,8 +591,11 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 				ArrayList<Event> list = userCalendar.get(name); // gets the list of events for the current user (name)
 				if (list != null)
 					for (Event event : list) {
-						// Check for if the access if private
-						if (!event.getAccess().equalsIgnoreCase("Private"))
+						if(event.getAccess().equalsIgnoreCase("Group") && !event.getDescription().contains(userName)) {
+							sb.append(event.getTime() + "\t\t" +
+							"---------" + "\t\t" +
+							event.getAccess() + "\n");
+						} else if (!event.getAccess().equalsIgnoreCase("Private"))
 							sb.append(event.getTime() + "\t\t" +
 									event.getDescription() + "\t\t" +
 									event.getAccess() + "\n");
@@ -600,18 +610,11 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 
 	// Post and event in any user's calendar
 	public boolean postInAnyCalendar(String name, String timeInterval, String eventDescription, String accessControl) throws RemoteException {
-
-		if ((isOwner(name) == true) && (userName.equals(name)))
-			// add an event into the name's calendar
-			//  addEvent() in its turn checks for overlaps
-			return addEvent(userName, timeInterval, eventDescription, accessControl);
-
-		if (accessControl.equalsIgnoreCase("Group")) {
-			// If the access is Group then add into the calendar
-			// addEvent() in its turn checks for overlaps
-			return addEvent(name, timeInterval, eventDescription, accessControl);
+		for (String n : userCalendar.keySet()) {
+			if(n != null && name.equalsIgnoreCase(n)) {
+				return addEvent(n, timeInterval, eventDescription, accessControl);
+			}
 		}
-
 		return false;
 	}
 
