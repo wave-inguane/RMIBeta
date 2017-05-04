@@ -101,8 +101,7 @@ public class Client extends UnicastRemoteObject implements RemCalendar {
 				System.out.println("9:  create another calendar ");
 				System.out.println("10: viewAnyCalendar");
 				System.out.println("11: switch users ");
-				System.out.println("13: postInAnyCalendar");
-				System.out.println("14: exit ");
+				System.out.println("12: exit ");
 
 				// Pick the entered operation
 				if (conIn.hasNextInt())
@@ -382,86 +381,9 @@ public class Client extends UnicastRemoteObject implements RemCalendar {
 							System.out.println("Username is switched to " + remcalendar.getUserName());
 						}
 						break;
-					case 13:
-						remcalendar.setUserName(userName);
-						userName = remcalendar.getUserName();
-						System.out.println("Please enter owner's name: ");
-						name = conIn.nextLine();
-						flag = remcalendar.calendarExist(name);
-						if (flag != true) {
-							System.out.println("Please create a calendar first \n"
-									+ "or select view calendars to select from existing calendars");
-						} else {
-							boolean check = false;
-							System.out.println("Enter event time: (Ex: 9-10 or 17-19)");
-							String timeInterval = conIn.nextLine();
-							// Test the input for correctness
-							if (timeInterval.contains("-")) {
-								int count = 0;
-								for (int i = 0; i < timeInterval.length(); i++) {
-									if (timeInterval.charAt(i) == '-') {
-										count++;
-										if (count > 1) {
-											System.out.println("\nPlease make sure you correct entered numbers.\n");
-											check = true;
-											break;
-										}
-									} else if (!Character.isDigit(timeInterval.charAt(i))) {
-										System.out.println("\nPlease make sure you entered correct numbers.\n");
-										check = true;
-										break;
-									}
-								}
-							} else if (!timeInterval.contains("-")) {
-								System.out.println("\nPlease make sure you entered correct numbers.\n");
-								check = true;
-							}
-
-							// Check if the input contains integers in a correct format
-							if (!check) {
-								timeInterval = timeInterval.replaceAll(" ", "");
-								String[] checkTime = timeInterval.split("-");
-								if (Integer.parseInt(checkTime[0]) > Integer.parseInt(checkTime[1])) {
-									System.out.println("\nWrong time entered! Please try again.\n");
-									break;
-								}
-
-								System.out.println("Enter event description: Ex: Squash game with Mary ");
-								String eventDescription = conIn.nextLine();
-
-								System.out.println("Enter event access control: Ex: Private, Public, Group, and Open  ");
-								String accessControl = conIn.nextLine();
-
-								//take over shared variable
-								remcalendar.setUserName(userName);
-
-								flag = remcalendar.postInAnyCalendar(name, timeInterval, eventDescription, accessControl);
-
-								userName = remcalendar.getUserName();
-								if (flag == true) {
-									System.out.println("\n.........................................");
-									System.out.println("Event posted.");
-									System.out.println("...........................................");
-
-									//----------------IF OPEN EVENT NOTIFY ALL ACTIVE USERS----------
-									//get all active users and register them except yourself
-									//Notify them
-									if (accessControl.equalsIgnoreCase("Open")) {
-
-										//Send Notification to others
-
-										chatServer.broadcastMessage(userName + " : " + "has an open event from :" + timeInterval);
-									}
-									//-------------------------End notification---------------------
-
-								} else {
-									System.out.println("\n\nPost failed! access denied");
-								}
-							}
-						}
-						break;
-					case 14:
+					case 12:
 						keepGoing = false;
+						remcalendar.loggedOut(userName);
 						break;
 					default:
 						System.out.println("Error in operation choice.");
@@ -566,13 +488,13 @@ public class Client extends UnicastRemoteObject implements RemCalendar {
 		return remcalendar.viewAnyCalendar(userName);
 	}
 
-	public boolean postInAnyCalendar(String otherUserName, String timeInterval, String eventDescription, String accessControl) throws RemoteException {
-		return remcalendar.postInAnyCalendar(otherUserName, timeInterval, eventDescription, accessControl);
-	}
-
 	// The next two methods are purely for testing purposes
 	public int getMemberCount() throws RemoteException {
     	return remcalendar.getMemberCount();
+    }
+    
+    public void loggedOut(String userName)throws RemoteException {
+           remcalendar.loggedOut(userName);
     }
 
     public int getOpenIntervalsCheck() throws RemoteException {

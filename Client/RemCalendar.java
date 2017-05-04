@@ -72,8 +72,7 @@ public interface RemCalendar extends Remote {
     // If userName is not equal to this.userName then private events are not displayed
 	public String viewAnyCalendar(String userName) throws RemoteException;
 
-	// Method that posts an event in the userName's calendar
-	public boolean postInAnyCalendar(String userName, String timeInterval, String eventDescription, String accessControl) throws RemoteException;
+    public void loggedOut(String name)throws RemoteException;
 
 	public int getMemberCount() throws RemoteException;
 
