@@ -344,8 +344,8 @@ public class Client extends UnicastRemoteObject implements RemCalendar {
 
 						} else {
 							System.out.println("\n\nFailed to modify because of the time overlaps with other group events or open intervals or wrong Group time was entered");
-							System.out.println("Members count: " + remcalendar.getMemberCount());
-							System.out.println("Open Interval count: " + remcalendar.getOpenIntervalsCheck());
+							System.out.println("TEST: Members count: " + remcalendar.getMemberCount());
+							System.out.println("TEST: Open Interval count: " + remcalendar.getOpenIntervalsCheck());
 						}
 						break;
 					case 9:
