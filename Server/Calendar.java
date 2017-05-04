@@ -610,6 +610,7 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 
 	// Post and event in any user's calendar
 	public boolean postInAnyCalendar(String name, String timeInterval, String eventDescription, String accessControl) throws RemoteException {
+	   
 		for (String n : userCalendar.keySet()) {
 			if(n != null && name.equalsIgnoreCase(n)) {
 				return addEvent(n, timeInterval, eventDescription, accessControl);
