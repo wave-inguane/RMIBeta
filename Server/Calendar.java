@@ -258,16 +258,6 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 						}
 					}
 				}
-				// } else if(key.equalsIgnoreCase(userName)) {
-				// 	ArrayList<Event> apptList = entry.getValue();
-				// 	for (Event event : apptList) {
-				// 		if(!event.getAccess().equals("Open")) {
-				// 			currentTimeInterval = event.getTime().split("-");
-				// 			startTime.add(Integer.parseInt(currentTimeInterval[0]));
-				// 			endTime.add(Integer.parseInt(currentTimeInterval[1]));
-				// 		}
-				// 	}
-				// }
 			}
 			// Check if there is any overlap
 			if (!startTime.isEmpty()) {
@@ -289,47 +279,48 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 		sb.append(eventDescription + "\n \t\tMembers: ");
 
 		//STEP 3:
-		int i = 0;
-		String addMe;
-		while (i < names.size()) {
-			ArrayList<Event> list = userCalendar.get(addMe = names.get(i++));
+		for (String name : userCalendar.keySet()) {
+			ArrayList<Event> list = userCalendar.get(name);
 			for (Event event : list) {
+				event.getTime().replaceAll(" ", "");
+				timeInterval = timeInterval.replaceAll(" ", "");
 				String[] apptTime = event.getTime().split("-");
 				String[] groupTime = timeInterval.split("-");
-				if ((Integer.parseInt(apptTime[0]) >= Integer.parseInt(groupTime[0]) &&
-					(Integer.parseInt(apptTime[0]) < Integer.parseInt(groupTime[1]))) &&
-					((Integer.parseInt(apptTime[1]) > Integer.parseInt(groupTime[0])) &&
+				if ((Integer.parseInt(apptTime[0]) <= Integer.parseInt(groupTime[0]) &&
+						(Integer.parseInt(apptTime[1]) >= Integer.parseInt(groupTime[1]))) &&
+						event.getAccess().equalsIgnoreCase("Open")) {
+	                if(!sb.toString().contains(name)) {
+		                sb.append("" + name + " ");
+		            }
+	        	}
+                if(userName.equals(name) && 
+                	(Integer.parseInt(apptTime[0]) <= Integer.parseInt(groupTime[0]) &&
 					(Integer.parseInt(apptTime[1]) >= Integer.parseInt(groupTime[1]))) &&
 					event.getAccess().equalsIgnoreCase("Open")) {
-		                sb.append("" + addMe + " ");
-
-		                if(userName.equals(addMe) && 
-		                	(Integer.parseInt(apptTime[0]) >= Integer.parseInt(groupTime[0]) &&
-							(Integer.parseInt(apptTime[0]) < Integer.parseInt(groupTime[1]))) &&
-							((Integer.parseInt(apptTime[1]) > Integer.parseInt(groupTime[0])) &&
-							(Integer.parseInt(apptTime[1]) >= Integer.parseInt(groupTime[1]))) &&
-							event.getAccess().equalsIgnoreCase("Open")) {
-		                		eventTobeRemoved = event;
-		                		l = list;
-		                }
+                		eventTobeRemoved = event;
+                		l = list;
 				}
 			}
 		}
 
+		int count = 0;
 		//STEP 4:
 		boolean isGroup = false; 
 	    for(int j = 0; j < names.size(); j++) {
 	  		if(sb.toString().contains(names.get(j))) {
+	  			count++;
 	  			isGroup = true;
-	  			break;
+	  			//break;
 	  		}
 		}
-	  	if(isGroup) {
+	  	if(count > 1) {
 	  		flag = addEvent(userName, timeInterval, sb.toString(), "Group");
-		    l.remove(eventTobeRemoved);
+	  		if(eventTobeRemoved != null) {
+		    	l.remove(eventTobeRemoved);
+			}
 
 	  	} else {
-	  		flag = addEvent(userName, timeInterval, sb.toString(), accessControl);
+	  		flag = addEvent(userName, timeInterval, eventDescription, accessControl);
 	  	}
 	  return flag;
 	}
@@ -453,19 +444,31 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 				if (name.equalsIgnoreCase(userName)) {
 					ArrayList<Event> apptList = userCalendar.get(name); // gets the list of events for the current user (name)
 					for (Event event : apptList) {
-						sb.append(event.getTime() + "\t\t" +
-								event.getDescription() + "\t\t" +
-								event.getAccess() + "\n");
+						// Check if the user is the group member
+						if(event.getAccess().equalsIgnoreCase("Group") && !event.getDescription().contains(name)) {
+							sb.append(event.getTime() + "\t\t" +
+							"---------" + "\t\t" +
+							event.getAccess() + "\n");
+						} else {
+							sb.append(event.getTime() + "\t\t" +
+							event.getDescription() + "\t\t" +
+							event.getAccess() + "\n");
+						}
 					}
 				} else {
 					// Do not display "private" events if the !this.userName
 					ArrayList<Event> apptList = userCalendar.get(name); // gets the list of events for the current user (name)
 					for (Event event : apptList) {
 						if (!event.getAccess().equalsIgnoreCase("Private")) {
-							sb.append(event.getTime() + "\t\t" +
+							if(event.getAccess().equalsIgnoreCase("Group") && !event.getDescription().contains(name)) {
+								sb.append(event.getTime() + "\t\t" +
+								"---------" + "\t\t" +
+								event.getAccess() + "\n");
+							} else { 
+								sb.append(event.getTime() + "\t\t" +
 									event.getDescription() + "\t\t" +
 									event.getAccess() + "\n");
-
+							}
 						}
 					}
 				}
