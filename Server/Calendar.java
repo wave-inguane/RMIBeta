@@ -278,7 +278,7 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 		StringBuilder sb = new StringBuilder();
 		sb.append(eventDescription + "\n \t\tMembers: ");
 
-		//STEP 3:
+		//STEP 2:
 		for (String name : userCalendar.keySet()) {
 			ArrayList<Event> list = userCalendar.get(name);
 			for (Event event : list) {
@@ -305,12 +305,9 @@ public class Calendar extends UnicastRemoteObject implements RemCalendar {
 
 		int count = 0;
 		//STEP 4:
-		boolean isGroup = false; 
 	    for(int j = 0; j < names.size(); j++) {
 	  		if(sb.toString().contains(names.get(j))) {
 	  			count++;
-	  			isGroup = true;
-	  			//break;
 	  		}
 		}
 	  	if(count > 1) {
